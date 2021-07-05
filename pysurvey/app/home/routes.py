@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, Flask
 from forms import SignUpForm
+import hashlib
 
 home = Blueprint('home', __name__)
 
@@ -20,9 +21,14 @@ def about():
                                                                                              signed_in='True')
 
 
-@home.route('/signup')
+@home.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
+    if form.is_submitted():
+        result = request.form
+        username = result['username']
+        password = hashlib.sha256(result['password'].encode()).hexdigest()
+        #mettere username e password nel db
     return render_template('signup.html', title='Signup', form=form) if signed_in == 0 else render_template('signup.html', title='Signup',
                                                                                              signed_in='True', form=form)
 
