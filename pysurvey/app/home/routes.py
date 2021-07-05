@@ -1,19 +1,37 @@
-from flask import Blueprint, render_template, request
-from random import randint
-
+from flask import Blueprint, render_template, request, Flask
+from forms import SignUpForm
 
 home = Blueprint('home', __name__)
+
+signed_in = 0
+#da modificare con un cookie di sessione lato frontend
 
 
 @home.route('/home')
 @home.route('/', methods=['GET', 'POST'])
 def homepage():
-    return render_template('home.html', title='Home')
-    #return render_template('home.html', title='Home', signed_in='True')
+    return render_template('home.html', title='Home') if signed_in == 0 else render_template('home.html', title='Home',
+                                                                                             signed_in='True')
 
 
-@home.route('/about')
+@home.route('/chi-siamo')
 def about():
-    return render_template('about.html', title='About')
-    #return render_template('about.html', title='About', signed_in='True')
+    return render_template('about.html', title='Chi siamo') if signed_in == 0 else render_template('about.html', title='Chi siamo',
+                                                                                             signed_in='True')
 
+
+@home.route('/signup')
+def signup():
+    form = SignUpForm()
+    return render_template('signup.html', title='Signup', form=form) if signed_in == 0 else render_template('signup.html', title='Signup',
+                                                                                             signed_in='True', form=form)
+
+
+@home.route('/login')
+def login():
+    return render_template('login.html', title='Login') if signed_in == 0 else render_template('login.html', title='Login',
+                                                                                             signed_in='True')
+
+@home.route('/my-survey')
+def mysurvey():
+    return render_template('my-survey.html', title='Survey')

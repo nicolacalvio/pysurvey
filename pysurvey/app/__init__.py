@@ -7,6 +7,7 @@ from app.home.routes import home
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
 
 app.register_blueprint(errors)
