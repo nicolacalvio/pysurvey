@@ -1,5 +1,8 @@
 controllaAccesso();
 controllaAccessoMobile();
+//uso i cookie invece che condizioni con le sessioni lato backend per togliere carico al backend
+//pianifico la struttura della mia applicazione in modo da sostenere elevati carichi
+//N.B non usare i cookie per prendere i dati in quanto l'utente può modificarli, usare sempre la sessione
 function controllaAccesso(){
     const getCookie = (cookie_name) =>{
          const re = new RegExp(`(?<=${cookie_name}=)[^;]*`);
