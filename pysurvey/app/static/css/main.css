@@ -2,7 +2,7 @@ h1{
     text-align: center !important;
     padding-top: 25px !important;
 }
-
+/*
 .wrapper{
     text-align: center;
 }
@@ -15,4 +15,8 @@ button{
 p{
     margin-top: 50px;
     text-align: center !important;
+}
+*/
+#immagine_profilo{
+    display: none;
 }
