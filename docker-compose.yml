@@ -6,6 +6,8 @@ services:
       - POSTGRESQL_PASSWORD=bitnami
     volumes:
       - 'postgresql_data:/bitnami'
+    ports:
+          - '5432:5432'
   phppgadmin:
     image: docker.io/bitnami/phppgadmin:7
     ports:
