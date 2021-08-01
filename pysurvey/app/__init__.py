@@ -1,3 +1,6 @@
+from enum import unique
+
+import primary
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import TestingConfig, DevelopmentConfig, ProductionConfig
@@ -5,7 +8,6 @@ import os
 from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session
 from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
-import hashlib
 from markupsafe import escape
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -21,6 +23,25 @@ class User(db.Model):
     username = db.Column(db.String(40), unique=True)
     email = db.Column(db.String(200))
     password = db.Column(db.String(200))
+    immagine = db.Column(db.String(200))
+
+
+class Survey(db.Model):
+    idSurvey = db.Column(db.Integer, primary_key=True)  # sono chiavi esterne
+    idUser = db.Column(db.Integer)
+    titolo = db.Column(db.String(80))
+
+
+class Domande(db.Model):
+    idSurvey = db.Column(db.Integer)  # sono chiavi esterne
+    idDomanda = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.String(200))
+
+
+class Risposte(db.Model):
+    idRisposta = db.Column(db.Integer, primary_key=True)
+    idDomanda = db.Column(db.Integer)
+    risposta = db.Column(db.String(80))
 
 
 db.create_all()
@@ -54,6 +75,8 @@ def login():
                 iduser = user.id  # facciamo finta sia id dell'utente restituita in query
                 session['iduser'] = iduser
                 session['username'] = username
+                session['mail'] = user.email
+                session['immagine'] = user.immagine
                 resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
                 return resp
                 # altrimenti return 'credenziali sbagliate'
@@ -69,12 +92,14 @@ def signup():
         username = result['username']
         password = generate_password_hash(result['password'], method='sha256')
         mail = result['email']
-        new_user = User(username=username, email=mail, password=password)
+        new_user = User(username=username, email=mail, password=password, immagine="../static/img/profile.png")
         db.session.add(new_user)
         db.session.commit()
-        iduser = 0  # facciamo finta sia id dell'utente restituita in query
+        iduser = new_user.id  # facciamo finta sia id dell'utente restituita in query
         session['iduser'] = iduser
         session['username'] = username
+        session['mail'] = mail
+        session['immagine'] = "../static/img/profile.png"
         resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
         return resp
     return render_template('signup.html', title='Signup', form=form)
@@ -89,7 +114,9 @@ def mysurvey():
 def myaccount():
     try:
         username = escape(session['username'])
-        return render_template('my-account.html', title='MY ACCOUNT', username=username)
+        mail = escape(session['mail'])
+        immagine = escape(session['immagine'])
+        return render_template('my-account.html', title='MY ACCOUNT', username=username, mail=mail, immagine=immagine)
     except:
         return render_template('my-account.html', title='MY ACCOUNT')
 

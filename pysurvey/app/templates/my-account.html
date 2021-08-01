@@ -7,7 +7,7 @@
 
                    <div class="w-full flex justify-center ">
                     <div class="border-4 rounded-full border-black">
-                       <img class=" h-48 inline  p-2" src="../static/img/profile.png" >
+                       <img class=" h-48 inline  p-2" src="{{ immagine }}" >
                     </div>
 
                     </div>
@@ -22,27 +22,69 @@
 
                <div class="m-4 flex w-full ml-4  ">
                     <div class="flex w-1/2">
-                        <h1 class="font-medium justify-start text-2xl"> Nome </h1>
+                        <h1 class="font-medium justify-start text-2xl"> Username</h1>
                     </div>
                    <div class="flex w-1/2">
-                        <h1 class="font-medium justify-start text-2xl "> Cognome </h1>
+                        <h1 class="font-medium justify-start text-2xl "> Mail</h1>
                     </div>
                 </div>
                 <div class="m-4 flex w-full justify-around  ">
                     <div class="flex w-1/2">
-                        <h1 class="text-xl"> data </h1>
+                        <h1 class="text-xl"> {{ username }} </h1>
                     </div>
                    <div class="flex w-1/2">
-                       <h1 class="text-xl"> luogo</h1>
+                       <h1 class="text-xl"> {{ mail }}</h1>
                     </div>
                 </div>
+
                 <div class="m-4 flex justify-start  w-1/2 ">
-                  <h1 class="text-2xl"> ciccio@gmail.com</h1>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="modifica">Modifica</button>
+                 <!-- <h1 class="text-2xl"> ciccio@gmail.com</h1>-->
                 </div>
+
+
             </div>
 
 
             </div>
+        <script>
+        document.getElementById("modifica").addEventListener("click", modificaSchermata);
+            function salva() {
+                //chiamata a API per salvare i nuovi dati inseriti
+
+                //cambio gli input con gli h1 di prima
+
+                //cambio il bottone in modifica
+                const modifica = document.getElementById("modifica");
+                modifica.innerText = "modifica";
+                modifica.removeEventListener("click", salva);
+                modifica.addEventListener("click", modificaSchermata);
+            }
+
+            function modificaSchermata(){
+            //trasformo gli ultimi due h1 in caselle di testo
+            console.log("cliccato");
+            const campi = [document.querySelectorAll("h1")[4], document.querySelectorAll("h1")[5]];
+            campi.forEach((elemento)=>{
+                if(elemento){
+                   const testo = elemento.innerText;
+                   const genitore = elemento.parentNode;
+                   elemento.remove();
+                   const nuovo = document.createElement("input");
+                   nuovo.type = "text";
+                   nuovo.value = testo;
+                   genitore.appendChild(nuovo);
+                }
+            });
+            //dentro l'immagine ci metto un bottone cambia
+
+            //il tasto modifica diventa salva
+            const modifica = document.getElementById("modifica");
+            modifica.innerText = "salva";
+            modifica.removeEventListener("click", modificaSchermata);
+            modifica.addEventListener("click", salva);
+        }
+        </script>
 
     <!-- <h1>Ciao {{ username }}!</h1> -->
     {% else %}

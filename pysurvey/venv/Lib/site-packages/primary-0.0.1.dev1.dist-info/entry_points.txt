@@ -1,0 +1,3 @@
+[console_scripts]
+primary = primary.cli.main
+
