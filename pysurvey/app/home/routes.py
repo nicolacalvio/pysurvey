@@ -58,6 +58,6 @@ def mysurvey():
 def myaccount():
     try:
         username = escape(session['username'])
-        return render_template('my-account.html', title='My Account', username=username)
+        return render_template('my-account.html', title='MY ACCOUNT', username=username)
     except:
-        return render_template('my-account.html', title='My Account')
+        return render_template('my-account.html', title='MY ACCOUNT')

@@ -2,7 +2,49 @@
 {% block content %}
 
     {% if username %}
-    <h1>Ciao {{ username }}!</h1>
+            <div class=" flex justify-center w-2/5 m-3 " >
+            <div class="justify-center">
+                <div class="justify-center">
+                   <div class="w-full flex justify-center ">
+                    <div class="border-4 rounded-full border-black">
+                       <img class=" h-48 inline  p-2" src="../static/img/profile.png" >
+                    </div>
+
+                </div>
+                <h1 class="font-medium text-xl ">{{ username }}!</h1>
+                </div>
+
+            </div>
+
+            </div>
+            <div class=" w-full flex  items-center p-4  ">
+            <div class="w-full flex flex-col justify-center ml-5">
+
+               <div class="m-4 flex w-full ml-4  ">
+                    <div class="flex w-1/2">
+                        <h1 class="font-medium justify-start text-2xl"> {{ username }}!</h1>
+                    </div>
+                   <div class="flex w-1/2">
+                        <h1 class="font-medium justify-start text-2xl "> {{ username }}!</h1>
+                    </div>
+                </div>
+                <div class="m-4 flex w-full justify-around  ">
+                    <div class="flex w-1/2">
+                        <h1 class="text-xl"> data </h1>
+                    </div>
+                   <div class="flex w-1/2">
+                       <h1 class="text-xl"> luogo</h1>
+                    </div>
+                </div>
+                <div class="m-4 flex justify-start  w-1/2 ">
+                  <h1 class="text-2xl"> ciccio@gmail.com</h1>
+                </div>
+            </div>
+
+
+            </div>
+
+    <!-- <h1>Ciao {{ username }}!</h1> -->
     {% else %}
     <h1>Devi prima accedere!</h1>
     {% endif %}
