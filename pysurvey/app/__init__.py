@@ -51,11 +51,10 @@ def login():
             if check_password_hash(user.password, password):
                 # controllare se i dati corrispondono a quelli del DB
                 # settare cookie di sessione, query deve ritornare l'id dell'utente
-                iduser = 0  # facciamo finta sia id dell'utente restituita in query
+                iduser = user.id  # facciamo finta sia id dell'utente restituita in query
                 session['iduser'] = iduser
                 session['username'] = username
                 resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
-                resp.set_cookie('loggato', str(iduser))
                 return resp
                 # altrimenti return 'credenziali sbagliate'
         return '<h1>username o password errati</h1>'
@@ -77,7 +76,6 @@ def signup():
         session['iduser'] = iduser
         session['username'] = username
         resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
-        resp.set_cookie('loggato', str(iduser))
         return resp
     return render_template('signup.html', title='Signup', form=form)
 
@@ -94,6 +92,16 @@ def myaccount():
         return render_template('my-account.html', title='MY ACCOUNT', username=username)
     except:
         return render_template('my-account.html', title='MY ACCOUNT')
+
+
+@home.route('/logged')
+def isLogged():
+    try:
+        if session['iduser']:
+            return "1"
+        return "0"
+    except:
+        return "0"
 
 
 app.register_blueprint(home)
