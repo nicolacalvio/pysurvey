@@ -19,7 +19,7 @@
 <div class = "h-screen">
 <div class="h-full flex flex-col">
  <div >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+  <div class="w-full px-11">
     <div class="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
       <div class="flex justify-start lg:w-0 lg:flex-1">
         <a href="/home">
@@ -42,7 +42,7 @@
       <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
           <!-- se utente loggato mostriamo l'immagine della personcina -->
         <a href="/my-account" class="text-base font-medium text-gray-900 hover:text-gray-900" id="immagine_profilo">
-                <img class=" h-7 w-auto inline" src="../static/img/profile.png" >
+                <img class=" h-10 w-auto inline" src="../static/img/profile.png" >
         </a>
           <!-- utente non loggato vede questa di default -->
         <div id="non_loggato">
@@ -95,7 +95,7 @@
 </div>
 <script src="{{ url_for('static', filename='js/index.js')}}"></script>
 <!-- TODO: mettere un controllo sulla home, non devce comparire la scritta -->
-<h1>{{ title }}</h1>
+<h1 class="font-medium text-3xl font-bold">{{ title }}</h1>
 <div class="h-full flex">
 
     {% block content %}
