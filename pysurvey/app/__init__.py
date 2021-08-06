@@ -1,11 +1,12 @@
 from enum import unique
 
 import primary
+import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app.config import TestingConfig, DevelopmentConfig, ProductionConfig
 import os
-from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session
+from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session, jsonify
 from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
 from markupsafe import escape
@@ -42,6 +43,13 @@ class Risposte(db.Model):
     idRisposta = db.Column(db.Integer, primary_key=True)
     idDomanda = db.Column(db.Integer)
     risposta = db.Column(db.String(80))
+
+
+class RisposteUtenti(db.Model):
+    idRisposta = db.Column(db.Integer)
+    idDomanda = db.Column(db.Integer)
+    idUtente = db.Column(db.Integer)
+    idRispostaUtente = db.Column(db.Integer, primary_key=True)
 
 
 db.create_all()
@@ -121,14 +129,75 @@ def myaccount():
         return render_template('my-account.html', title='MY ACCOUNT')
 
 
+# API time
+
 @home.route('/logged')
 def isLogged():
+    # questa funzione dice se l'utente è loggato
     try:
         if session['iduser']:
             return "1"
         return "0"
     except:
         return "0"
+
+
+@home.route('/modificaAccount', methods=['GET'])
+def modifyAccount():
+    # questa funzione permette di modificare l'account
+    # la richiesta deve essere /modificaAccount?immagine="/img/immagine.png"&nome="nicola"&mail="prova@prova.it"
+    # attenzione se l'utente non modifica qualcosa non mettetelo nella richiesta!
+    # l'ordine in cui mettete i paramentri non è importante
+    id = escape(session['iduser'])
+    user = db.session.query(User).filter(User.id == id).first()
+    if 'immagine' in request.args:
+        user.immagine = request.args['immagine']
+    if 'nome' in request.args:
+        user.nome = request.args['nome']
+    if 'mail' in request.args:
+        user.mail = request.args['mail']
+    db.session.commit()
+    return "success"
+
+
+@home.route('/inviaRisposta', methods=['POST'])
+def riceviRisposta():
+    # questa funzione salva la risposta di un sondaggio
+    content = request.get_json()
+    # json
+    # {
+    #   [
+    #       idDomanda:x,
+    #       idRisposta:y
+    #   ],
+    #   [
+    #       idDomanda:x,
+    #       idRisposta:y
+    #   ]
+    # }
+    contenuto = json.loads(content)
+    for domanda in contenuto:
+        if isLogged() == "1":
+            db.session.add(RisposteUtenti(idDomanda=['idDomanda'], idRisposta=domanda['idRisposta'],
+                                          idUtente=escape(session['iduser'])))
+        else:
+            db.session.add(RisposteUtenti(idDomanda=['idDomanda'], idRisposta=domanda['idRisposta']))
+        db.session.commit()
+        return "success"
+
+
+@home.route('/prendiQuiz', methods=['POST'])
+def ritornaQuiz():
+    # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
+    # è necessario mandare come paramentro l'id del survey
+    if 'idSurvey' in request.args:
+        domandeERisposte = db.session.query(Domande.question.distinct().label('question')) \
+            .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
+            .addColumn('idSurvey', 'idDomanda', 'question', 'idDomanda', 'idRisposta', 'Risposta') \
+            .filter(Domande.idSurvey == request.args['idSurvey'])
+        return jsonify(domandeERisposte)
+    else:
+        return "manca l'id survey"
 
 
 app.register_blueprint(home)
