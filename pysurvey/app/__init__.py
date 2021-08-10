@@ -32,6 +32,15 @@ class Survey(db.Model):
     idUser = db.Column(db.Integer)
     titolo = db.Column(db.String(80))
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'idSurvey': self.idSurvey,
+            'idUser': self.idUser,
+            'titolo': self.titolo
+        }
+
 
 class Domande(db.Model):
     idSurvey = db.Column(db.Integer)  # sono chiavi esterne
@@ -186,18 +195,55 @@ def riceviRisposta():
         return "success"
 
 
-@home.route('/prendiQuiz', methods=['POST'])
-def ritornaQuiz():
+# @home.route('/prendiSurvey', methods=['POST'])
+def ritornaSurvey(idSurvey):
     # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
     # è necessario mandare come paramentro l'id del survey
-    if 'idSurvey' in request.args:
-        domandeERisposte = db.session.query(Domande.question.distinct().label('question')) \
-            .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
-            .addColumn('idSurvey', 'idDomanda', 'question', 'idDomanda', 'idRisposta', 'Risposta') \
-            .filter(Domande.idSurvey == request.args['idSurvey'])
-        return jsonify(domandeERisposte)
-    else:
-        return "manca l'id survey"
+    # .addColumn('idSurvey', 'idDomanda', 'question', 'idDomanda', 'idRisposta', 'Risposta') \
 
+    # domanda =
+
+    domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta) \
+        .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
+        .filter(Domande.idSurvey == idSurvey).all()
+    # return jsonify(domandeERisposte)
+    return domandeERisposte
+
+
+@home.route('/creaSurvey', methods=['POST'])
+def creaSurvey():
+    # questa funzione accetta in input un json che contiene tutte le risposte
+    # e tutte le domande all'interno della survey
+    content = request.get_json()
+    contenuto = json.loads(content)
+    # json
+    # {
+    #       domanda:"come ti chiami?"
+    #       risposte:{ risposta1,
+    #                   risposta2
+    #                 },
+    #       domanda: "quanti anni hai?",
+    #       risposte:{ risposta1,
+    #                   risposta2
+    #                 }
+    # }
+
+@home.route('/titoloEId')
+def ritornaTitoloEId():
+    # ritorna tutte le domande dell'utente e l'id
+    if isLogged() == "1":
+        idUtente = escape(session['iduser'])
+        titoliEId = db.session.query(Survey).filter(Survey.idUser == idUtente).all()
+        if len(titoliEId) > 0:
+            return jsonify(json_list=[i.serialize for i in titoliEId])
+        return "Non hai ancora alcuna survey creata. <br> Creane subito una!"
+    return "Per vedere le tue survey o crearne delle nuove accedi oppure crea un account!"
+
+@home.route('/survey')
+def specificaSurvey():
+    if 'id' in request.args:
+        id = request.args['id']
+        survey = ritornaSurvey(id)
+        return render_template('survey.html', title='SURVEY', survey=survey)
 
 app.register_blueprint(home)
