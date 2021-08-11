@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="min-h-screen flex justify-center items-center px-20">
+  <div id="contenitore" class="space-y-10" >
 
-    <div id="titoli" align="center"></div>
+  </div>
+</div>
 
 
 <script>
@@ -10,17 +13,42 @@ var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
        // Typical action to be performed when the document is ready:
-        let div = document.getElementById("titoli");
+        let div = document.getElementById("contenitore");
         try {
             let json = JSON.parse(xhttp.responseText).json_list;
             json.forEach((elemento)=>{
+                /*
+                <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+                    <span>All categorie</span>
+                </div>
+                <div class="bg-red-600 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+                    <span>Vai al sondaggio</span>
+                </div>
+                 */
+                let divGrande = document.createElement("div");
+                divGrande.classList.add("flex", "items-center", "p-6", "space-x-6", "bg-white", "rounded-xl", "shadow-lg", "hover:shadow-xl", "transform", "hover:scale-105", "transition", "duration-500");
+
                 let nuovo = document.createElement("div");
-                nuovo.innerText = elemento.titolo;
+                //nuovo.innerText = elemento.titolo;
+                nuovo.classList.add("flex", "py-3", "px-4", "rounded-lg", "text-gray-500", "font-semibold", "cursor-pointer");
                 nuovo.id = elemento.idSurvey;
-                nuovo.addEventListener("click", ()=>{
+                let spanTitolo = document.createElement("span");
+                spanTitolo.innerText = elemento.titolo;
+                nuovo.appendChild(spanTitolo);
+                divGrande.appendChild(nuovo);
+
+                let nuovoBottone = document.createElement("div");
+                nuovoBottone.classList.add("bg-red-600", "py-3", "px-5", "text-white", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
+                let spanBottone = document.createElement("span");
+                spanBottone.innerText = "Vai al sondaggio";
+                nuovoBottone.appendChild(spanBottone);
+                divGrande.appendChild(nuovoBottone);
+
+                divGrande.addEventListener("click", ()=>{
                     window.location.href = "/survey?id="+elemento.idSurvey;
                 })
-                div.appendChild(nuovo);
+
+                div.appendChild(divGrande);
             })
 
 

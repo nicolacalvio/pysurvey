@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    <div class="h-full flex">
 
     {% if username %}
             <div class=" flex justify-center pr-4 w-2/5 m-3 " >
@@ -47,6 +48,7 @@
 
 
             </div>
+        </div>
         <script>
         document.getElementById("modifica").addEventListener("click", modificaSchermata);
             function salva() {
