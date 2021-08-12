@@ -19,12 +19,12 @@
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
-                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    <input type="radio" class="hidden" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
                                     {{ survey[i][1] }}
                                 </label>
                             {% else %}
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
-                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    <input type="radio" class="hidden" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
                                     {{ survey[i][1] }}
                                 </label>
                             {% endif %}
@@ -33,7 +33,7 @@
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
-                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    <input type="radio" class="hidden" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
                                     {{ survey[i][1] }}
                                 </label>
                         {% endif %}
@@ -46,6 +46,32 @@
         </div>
     </div>
 
+<script>
+    function colora(id){
+        //id=iddomanda_idrisposta
+        //coloro l'attuale se non è colorata
+        //se una della stessa domanda è colorata allora la decoloro e coloro questa
+        id = String(id);
+        const splitted = String(id).split('_');
+        const idDomanda = splitted[0];
+        const idRisposta = splitted[1];
+        const elementoAttuale = document.getElementById(id);
+        const elementiCircostanti = document.getElementsByName(idDomanda);
 
+        if(!elementoAttuale.classList.contains("bg-gray-300")){
+            elementoAttuale.classList.add("bg-gray-300");
+            elementoAttuale.checked = true;
+        }
+
+        elementiCircostanti.forEach((elemento)=>{
+            if(elemento!=elementoAttuale){
+                if(elemento.classList.contains("bg-gray-300") && elemento.checked){
+                    elemento.classList.remove("bg-gray-300");
+                    elemento.checked = false;
+                }
+            }
+        })
+    }
+</script>
 
 {% endblock content %}
