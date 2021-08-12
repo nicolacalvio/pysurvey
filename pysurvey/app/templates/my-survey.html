@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="flex justify-left items-center px-10">
+    <a href="/crea">
+        <div id="crea_sondaggio" class="hidden bg-green-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+                    <span>Crea un sondaggio!</span>
+        </div>
+    </a>
+</div>
 <div class="flex justify-center items-center px-20">
   <div id="contenitore" class="space-y-10" >
 
@@ -9,6 +16,20 @@
 
 
 <script>
+
+var xhttp1 = new XMLHttpRequest();
+xhttp1.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       // Typical action to be performed when the document is ready:
+       if(xhttp1.responseText == "1"){
+           document.getElementById("crea_sondaggio").classList.remove("hidden");
+       }
+    }
+};
+xhttp1.open("GET", "/logged", true);
+xhttp1.send();
+
+
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {

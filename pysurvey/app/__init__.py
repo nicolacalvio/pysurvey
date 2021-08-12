@@ -250,5 +250,10 @@ def specificaSurvey():
         survey = ritornaSurvey(id)
         return render_template('survey.html', title='SURVEY', survey=survey, len=len(survey))
 
+@home.route('/crea')
+def creaSondaggio():
+
+    return render_template('crea_sondaggio.html', title='CREA SURVEY')
+
 
 app.register_blueprint(home)
