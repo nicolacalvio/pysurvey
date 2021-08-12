@@ -11,6 +11,7 @@ from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
 from markupsafe import escape
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.inspection import inspect
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
@@ -203,7 +204,8 @@ def ritornaSurvey(idSurvey):
 
     # domanda =
 
-    domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta) \
+    domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta,
+                                        Domande.idDomanda, Risposte.idRisposta) \
         .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
         .filter(Domande.idSurvey == idSurvey).all()
     # return jsonify(domandeERisposte)
@@ -228,6 +230,7 @@ def creaSurvey():
     #                 }
     # }
 
+
 @home.route('/titoloEId')
 def ritornaTitoloEId():
     # ritorna tutte le domande dell'utente e l'id
@@ -239,11 +242,13 @@ def ritornaTitoloEId():
         return "Non hai ancora alcuna survey creata. <br> Creane subito una!"
     return "Per vedere le tue survey o crearne delle nuove accedi oppure crea un account!"
 
+
 @home.route('/survey')
 def specificaSurvey():
     if 'id' in request.args:
         id = request.args['id']
         survey = ritornaSurvey(id)
-        return render_template('survey.html', title='SURVEY', survey=survey)
+        return render_template('survey.html', title='SURVEY', survey=survey, len=len(survey))
+
 
 app.register_blueprint(home)

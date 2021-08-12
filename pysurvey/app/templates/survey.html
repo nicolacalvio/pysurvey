@@ -1,6 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
 
-{{  survey  }}
+    <style>
+        .domanda{
+            margin-top:20px;
+        }
+    </style>
+
+    <div id="app" class="flex w-full h-screen justify-center items-center">
+        <div class="w-full max-w-xl p-3">
+            <div class="bg-white p-12 rounded-lg shadow-lg w-full mt-8">
+                <div>
+
+                    {%for i in range(0, len)%}
+                         {% if i>0 %}
+                            {% if survey[i][2]!=survey[i-1][2] %}
+                                <p class="domanda text-2xl font-bold" >
+                                    {{ survey[i][0] }}
+                                </p>
+                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
+                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    {{ survey[i][1] }}
+                                </label>
+                            {% else %}
+                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
+                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    {{ survey[i][1] }}
+                                </label>
+                            {% endif %}
+                        {% else %}
+                           <p class="text-2xl font-bold">
+                                    {{ survey[i][0] }}
+                                </p>
+                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100 hover:bg-gray-200">
+                                    <input type="radio" class="hidden" value="{{ survey[i][2] }}_{{ survey[i][3] }}">
+                                    {{ survey[i][1] }}
+                                </label>
+                        {% endif %}
+                    {%endfor%}
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 {% endblock content %}
