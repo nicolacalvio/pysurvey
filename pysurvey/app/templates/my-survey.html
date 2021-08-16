@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="flex justify-left items-center px-10">
+<div class="flex flex-row-reverse p-10">
     <a href="/crea">
         <div id="crea_sondaggio" class="hidden bg-green-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
                     <span>Crea un sondaggio!</span>
         </div>
     </a>
 </div>
-<div class="flex justify-center items-center px-20">
-  <div id="contenitore" class="space-y-10" >
+<div class="flex flex-col py-10 px-20">
+  <div id="contenitore" class="flex justify-center" >
 
   </div>
 </div>
@@ -47,21 +47,22 @@ xhttp.onreadystatechange = function() {
                 </div>
                  */
                 let divGrande = document.createElement("div");
-                divGrande.classList.add("flex", "items-center", "p-6", "space-x-6", "bg-white", "rounded-xl", "shadow-lg", "hover:shadow-xl", "transform", "hover:scale-105", "transition", "duration-500");
+                divGrande.classList.add("flex","w-8/12", "p-6", "bg-white", "rounded-xl", "shadow-lg", "hover:shadow-xl", "transform", "hover:scale-105", "transition", "duration-500");
 
                 let nuovo = document.createElement("div");
                 //nuovo.innerText = elemento.titolo;
-                nuovo.classList.add("flex", "py-3", "px-4", "rounded-lg", "text-gray-500", "font-semibold", "cursor-pointer");
+                nuovo.classList.add("flex", "flex-1","w-4/5","py-3", "px-4", "rounded-lg", "text-gray-500", "font-semibold", "cursor-pointer");
                 nuovo.id = elemento.idSurvey;
                 let spanTitolo = document.createElement("span");
+                spanTitolo.classList.add("px-5", "text-xl");
                 spanTitolo.innerText = elemento.titolo;
                 nuovo.appendChild(spanTitolo);
                 divGrande.appendChild(nuovo);
 
                 let nuovoBottone = document.createElement("div");
-                nuovoBottone.classList.add("bg-red-600", "py-3", "px-5", "text-white", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
+                nuovoBottone.classList.add("flex","flex-row-reverse", "bg-red-600", "py-3", "px-5", "text-white", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
                 let spanBottone = document.createElement("span");
-                spanBottone.innerText = "Vai al sondaggio";
+                spanBottone.innerText = "Vai!!";
                 nuovoBottone.appendChild(spanBottone);
                 divGrande.appendChild(nuovoBottone);
 

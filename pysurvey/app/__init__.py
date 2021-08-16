@@ -73,10 +73,6 @@ def homepage():
     return render_template('home.html', title='Home')
 
 
-@home.route('/chi-siamo')
-def about():
-    return render_template('about.html', title='Chi siamo')
-
 
 @home.route('/login', methods=['GET', 'POST'])
 def login():

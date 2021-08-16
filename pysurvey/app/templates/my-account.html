@@ -22,21 +22,26 @@
             <div class="w-full flex flex-col justify-center ml-5">
 
                <div class="m-4 flex w-full ml-4  ">
-                    <div class="flex w-1/2">
-                        <h1 class="font-medium justify-start text-2xl"> Username</h1>
+                    <div class="flex flex-col w-1/2">
+                        <div id="username" class="font-medium justify-start text-2xl"> {{ username }}</div>
+                        <div id="userplaceholder">  username </div>
                     </div>
-                   <div class="flex w-1/2">
-                        <h1 class="font-medium justify-start text-2xl "> Mail</h1>
-                    </div>
-                </div>
-                <div class="m-4 flex w-full justify-around  ">
-                    <div class="flex w-1/2">
-                        <h1 class="text-xl"> {{ username }} </h1>
-                    </div>
-                   <div class="flex w-1/2">
-                       <h1 class="text-xl"> {{ mail }}</h1>
+                  <div class="flex flex-col w-1/2">
+                        <div id="mail" class="font-medium justify-start text-2xl"> {{ mail }}</div>
+                        <div id="mailplaceholder">  mail </div>
                     </div>
                 </div>
+
+                <div>
+                 <div class="col-span-6 sm:col-span-3">
+                <label for="country" class="block text-sm font-medium text-gray-700">Nazionalità</label>
+                <select id="country" name="country" autocomplete="country" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>Italiana</option>
+                  <option>Americana</option>
+                  <option>Mexicana</option>
+                </select>
+              </div>
+
 
                 <div class="m-4 flex justify-start  w-1/2 ">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="modifica">Modifica</button>
@@ -64,22 +69,33 @@
             }
 
             function modificaSchermata(){
-            //trasformo gli ultimi due h1 in caselle di testo
+            //trasformo mail e username
             console.log("cliccato");
-            const campi = [document.querySelectorAll("h1")[4], document.querySelectorAll("h1")[5]];
-            campi.forEach((elemento)=>{
+            const campi = [document.querySelectorAll("#username")[0], document.querySelectorAll("#mail")[0]];
+            const classi = [campi[0].classList, campi[1].classList];
+            const placeholders = [document.getElementById("userplaceholder"), document.getElementById("mailplaceholder")];
+            const nuovo_placeHolder = [document.createElement("div"), document.createElement("div")];
+            nuovo_placeHolder[0].id = "userplaceholder";
+            nuovo_placeHolder[0].innerText = "username";
+            nuovo_placeHolder[1].id = "mailplaceholder";
+            nuovo_placeHolder[1].innerText = "mail";
+
+            campi.forEach((elemento, indice)=>{
                 if(elemento){
                    const testo = elemento.innerText;
                    const genitore = elemento.parentNode;
                    elemento.remove();
+                   placeholders[indice].remove();
                    const nuovo = document.createElement("input");
                    nuovo.type = "text";
                    nuovo.value = testo;
+                   nuovo.classList=classi[indice];
                    genitore.appendChild(nuovo);
+                   genitore.appendChild(nuovo_placeHolder[indice]);
                 }
             });
             //dentro l'immagine ci metto un bottone cambia
-
+            //TODO: METTERE IL SELECT HIDE NORMALMENTE E SOSTITUIRLO CON UN DIV CHE DICE NAZIONALITÀ, QUANDO L'UTENTE SCHIACCIA MODIFICA DIVENTA DISPLAY BLOCK
             //il tasto modifica diventa salva
             const modifica = document.getElementById("modifica");
             modifica.innerText = "salva";
