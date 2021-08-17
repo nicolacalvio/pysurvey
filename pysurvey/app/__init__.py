@@ -167,7 +167,7 @@ def modifyAccount():
         user.username = request.args['nome']
         session['username'] = user.username
     if 'mail' in request.args:
-        user.mail = request.args['mail']
+        user.email = request.args['mail']
         session['mail'] = user.mail
     if 'nazionalita' in request.args['nazionalita']:
         user.nazionalita = request.args['nazionalita']
