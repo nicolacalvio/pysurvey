@@ -3,19 +3,18 @@
 
     <style>
         .domanda{
-            margin-top:20px;
+            margin-top:40px;
         }
     </style>
 
-    <div id="app" class="flex w-full h-screen justify-center items-center">
+    <div id="app" class="flex flex-col w-full justify-center items-center">
         <div class="w-full max-w-xl p-3">
             <div class="bg-white p-12 rounded-lg shadow-lg w-full mt-8">
                 <div>
-
                     {%for i in range(0, len)%}
                          {% if i>0 %}
                             {% if survey[i][2]!=survey[i-1][2] %}
-                                <p class="domanda text-2xl font-bold" >
+                                <p class="domanda text-2xl -ml-4 font-bold" >
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
@@ -29,7 +28,7 @@
                                 </label>
                             {% endif %}
                         {% else %}
-                           <p class="text-2xl font-bold">
+                           <p class="text-2xl -ml-4 font-bold">
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
@@ -38,16 +37,24 @@
                                 </label>
                         {% endif %}
                     {%endfor%}
-
-
-
-
                 </div>
             </div>
         </div>
+        <div class="w-3/4 flex flex-row-reverse">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full" id="salva">SALVA</button>
+        </div>
+    </div>
+
+    <div class="bg-green-400">
+
     </div>
 
 <script>
+    document.getElementById("salva").addEventListener("click", salva);
+    function salva(){
+        //prende tutte le radio checked, il loro id e lo serializza e manda la backend
+    }
+
     function colora(id){
         //id=iddomanda_idrisposta
         //coloro l'attuale se non è colorata
