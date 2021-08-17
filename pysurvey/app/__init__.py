@@ -159,7 +159,7 @@ def modifyAccount():
     # attenzione se l'utente non modifica qualcosa non mettetelo nella richiesta!
     # l'ordine in cui mettete i paramentri non è importante
     id = escape(session['iduser'])
-    user = db.session.query(User).filter(User.id == id).first()
+    user = db.session.query(User).filter(User.id == int(id)).first()
     if 'immagine' in request.args:
         user.immagine = request.args['immagine']
         session['immagine'] = user.immagine
@@ -168,8 +168,8 @@ def modifyAccount():
         session['username'] = user.username
     if 'mail' in request.args:
         user.email = request.args['mail']
-        session['mail'] = user.mail
-    if 'nazionalita' in request.args['nazionalita']:
+        session['mail'] = user.email
+    if 'nazionalita' in request.args:
         user.nazionalita = request.args['nazionalita']
         session['nazionalita'] = user.nazionalita
     db.session.commit()

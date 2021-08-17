@@ -115,6 +115,12 @@
             nuovo_placeHolder[0].innerText = "username";
             nuovo_placeHolder[1].id = "mailplaceholder";
             nuovo_placeHolder[1].innerText = "mail";
+            for(let i=0; i<document.getElementById("country").options.length;i++){
+                            if(document.getElementById("country").options[i].innerText===document.getElementById('nazionalita').innerText) {
+                                document.getElementById("country").selectedIndex = i;
+                                break;
+                            }
+                        }
             /*
             nuovo_placeHolder[2].id = "nazionalitaplaceholder";
             nuovo_placeHolder[2].innerText = "nazionalità";
@@ -140,6 +146,12 @@
                         boxnazionalita.classList.add("hidden");
                         const boxmodificanazionalita = document.getElementById("boxmodificanazionalita");
                         boxmodificanazionalita.classList.remove("hidden");
+                        for(let i=0; i<document.getElementById("country").options.length;i++){
+                            if(document.getElementById("country").options[i].innerText===document.getElementById('nazionalita').innerText) {
+                                document.getElementById("country").selectedIndex = i;
+                                break;
+                            }
+                        }
                     }
 
                 }
