@@ -26,6 +26,7 @@ class User(db.Model):
     email = db.Column(db.String(200))
     password = db.Column(db.String(200))
     immagine = db.Column(db.String(200))
+    nazionalita = db.Column(db.String(200), default="Italiana")
 
 
 class Survey(db.Model):
@@ -73,7 +74,6 @@ def homepage():
     return render_template('home.html', title='Home')
 
 
-
 @home.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -91,6 +91,7 @@ def login():
                 session['username'] = username
                 session['mail'] = user.email
                 session['immagine'] = user.immagine
+                session['nazionalita'] = user.nazionalita
                 resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
                 return resp
                 # altrimenti return 'credenziali sbagliate'
@@ -114,6 +115,7 @@ def signup():
         session['username'] = username
         session['mail'] = mail
         session['immagine'] = "../static/img/profile.png"
+        session['nazionalita'] = "Italiana"
         resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
         return resp
     return render_template('signup.html', title='Signup', form=form)
@@ -130,7 +132,9 @@ def myaccount():
         username = escape(session['username'])
         mail = escape(session['mail'])
         immagine = escape(session['immagine'])
-        return render_template('my-account.html', title='MY ACCOUNT', username=username, mail=mail, immagine=immagine)
+        nazionalita = escape(session['nazionalita'])
+        return render_template('my-account.html', title='MY ACCOUNT', username=username, mail=mail, immagine=immagine,
+                               nazionalita=nazionalita)
     except:
         return render_template('my-account.html', title='MY ACCOUNT')
 
@@ -158,10 +162,16 @@ def modifyAccount():
     user = db.session.query(User).filter(User.id == id).first()
     if 'immagine' in request.args:
         user.immagine = request.args['immagine']
+        session['immagine'] = user.immagine
     if 'nome' in request.args:
-        user.nome = request.args['nome']
+        user.username = request.args['nome']
+        session['username'] = user.username
     if 'mail' in request.args:
         user.mail = request.args['mail']
+        session['mail'] = user.mail
+    if 'nazionalita' in request.args['nazionalita']:
+        user.nazionalita = request.args['nazionalita']
+        session['nazionalita'] = user.nazionalita
     db.session.commit()
     return "success"
 
@@ -246,9 +256,9 @@ def specificaSurvey():
         survey = ritornaSurvey(id)
         return render_template('survey.html', title='SURVEY', survey=survey, len=len(survey))
 
+
 @home.route('/crea')
 def creaSondaggio():
-
     return render_template('crea_sondaggio.html', title='CREA SURVEY')
 
 
