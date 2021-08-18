@@ -1,6 +1,170 @@
 {% extends "base.html" %}
 {% block content %}
+<!DOCTYPE html>
+<html>
+    <main>
+      <div
+        class="relative pt-16 pb-32 flex content-center items-center justify-center"
+        style="min-height: 75vh;"
+      >
+        <div
+          class="absolute w-full h-full bg-center bg-cover"
+          style='background-image: url("https://cdn.pixabay.com/photo/2015/12/13/09/40/banner-1090830__340.jpg");'
+        >
+          <span
+            id="blackOverlay"
+            class="w-full h-full absolute bg-opacity-50 brightness-15"
+          ></span>
+        </div>
 
+        <div class="container relative mx-auto">
+          <div class="items-center flex flex-wrap">
+            <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
+
+                <h1 class=" text-purple-800 font-semibold text-7xl " >
+                  Facile,veloce,versatile!
+                </h1>
+                <p class="mt-7 text-lg text-black-300">
+                  Form per tutte le tue esigenze...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <section class="pb-20 bg-green-100 -mt-24">
+
+
+      <section class="relative py-20">
+        <div
+          class="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20"
+          style="height: 80px;"
+        >
+          <svg
+            class="absolute bottom-0 overflow-hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            version="1.1"
+            viewBox="0 0 2560 100"
+            x="0"
+            y="0"
+          >
+            <polygon
+              class="text-white fill-current"
+              points="2560 0 2560 100 0 100"
+            ></polygon>
+          </svg>
+        </div>
+        <div class="container mx-auto px-4">
+          <div class="items-center flex flex-wrap">
+            <div class="w-full md:w-4/12 ml-auto mr-auto px-4">
+              <img
+                alt="..."
+                class="max-w-full rounded-lg shadow-lg"
+                src="https://cdn.pixabay.com/photo/2016/07/04/02/37/question-mark-1495858__340.jpg"
+              />
+            </div>
+            <div class="w-full md:w-5/12 ml-auto mr-auto px-4">
+              <div class="md:pr-12">
+                <div
+                  class="text-pink-600 p-5 text-center inline-flex items-center justify-center w-16 h-16 mb-9 shadow-lg rounded-full bg-red-400"
+                >
+                  <i class="fas fa-rocket text-xl"></i>
+                </div>
+                <h3 class="text-3xl font-bold">Di cosa si tratta?</h3>
+                <p class="mt-4 text-lg leading-relaxed text-black-600">
+                  La nostra web app è stata ideata per creare questionari rivolti a una community di utenti.
+                  Il creatore, inoltre, ha la possibilità di analizzare le statistiche delle risposte al proprio form
+                  e quindi organizzare nuove domande in base ai risulttati ottenuti.
+                </p>
+                             </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--<section class="pt-20 pb-48">
+        <div class="container mx-auto px-4">
+          <div class="flex flex-wrap justify-center text-center mb-24">
+            <div class="w-full lg:w-6/12 px-4">
+              <h2 class="text-4xl font-semibold">Il gruppo</h2>
+            </div>
+          </div>
+          <div class="flex flex-wrap">
+            <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-12 px-4">
+              <div class="px-6">
+                <div class="pt-6 text-center">
+                  <h5 class="text-xl font-bold">Calvio Nicola</h5>
+                  <p class="mt-1 text-sm text-gray-500 uppercase font-semibold">
+                    Studente
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-12 px-4">
+              <div class="px-6">
+                <div class="pt-6 text-center">
+                  <h5 class="text-xl font-bold">Gibin Lisa</h5>
+                  <p class="mt-1 text-sm text-gray-500 uppercase font-semibold">
+                    Studente
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="w-full md:w-6/12 lg:w-3/12 lg:mb-0 mb-12 px-4">
+              <div class="px-6">
+                <div class="pt-6 text-center">
+                  <h5 class="text-xl font-bold">Messano Beatrice</h5>
+                  <p class="mt-1 text-sm text-gray-500 uppercase font-semibold">
+                    Studente
+                  </p>
+
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>-->
+
+      </section>
+    </main>
+    <footer class="relative bg-indigo-300 bg-opacity-50 pt-8 pb-6">
+      <div
+        class="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20"
+        style="height: 50px;">
+      </div>
+      <div class="container mx-auto px-4">
+        <div class="flex flex-wrap">
+          <div class="w-full lg:w-6/12 px-4">
+            <h4 class="text-purple-800 text-3xl  font-semibold">I Nostri Contatti:</h4>
+            <h5 class="text-lg mt-3 mb-2 text-gray-700">
+              Calvio Nicola : 873737@stud.unive.it
+            </h5>
+            <h6 class="text-lg mt-0 mb-2 text-gray-700">
+              Gibin Lisa : 874060@stud.unive.it
+            </h6>
+            <h7 class="text-lg mt-0 mb-2 text-gray-700">
+                Messano Beatrice : 876673@stud.unive.it
+            </h7>
+          </div>
+        </div>
+        <hr class="my-6 border-red-400 justify-center" />
+        <div
+          class="flex flex-wrap items-center md:justify-between justify-center"
+        >
+        </div>
+           <div class="w-full md:w-4/12 px-4  mx:auto text-center">
+                <div class="text-sm text-gray-600 font-semibold py-1 ">
+                    Copyright © 2021 Pysurvey
+                </div>
+           </div>
+    </footer>
+  <script>
+    function toggleNavbar(collapseID) {
+      document.getElementById(collapseID).classList.toggle("hidden");
+      document.getElementById(collapseID).classList.toggle("block");
+    }
+  </script>
+</html>
 
 
 {% endblock content %}
