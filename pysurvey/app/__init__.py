@@ -245,7 +245,7 @@ def ritornaTitoloEId():
         titoliEId = db.session.query(Survey).filter(Survey.idUser == idUtente).all()
         if len(titoliEId) > 0:
             return jsonify(json_list=[i.serialize for i in titoliEId])
-        return "Non hai ancora alcuna survey creata. <br> Creane subito una!"
+        return "Non hai ancora alcuna survey creata. \n Creane subito una!"
     return "Per vedere le tue survey o crearne delle nuove accedi oppure crea un account!"
 
 
