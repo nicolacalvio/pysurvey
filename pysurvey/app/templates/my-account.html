@@ -88,6 +88,7 @@
                 //chiamata a API per salvare i nuovi dati inseriti
                 const nome=document.querySelectorAll("#username")[0].innerText, mail=document.querySelectorAll("#mail")[0].innerText,
                     nazionalita=document.querySelectorAll("#nazionalita")[0].innerText;
+                document.getElementById("usernameProfilo").innerText = nome+"!";
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
