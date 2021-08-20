@@ -14,7 +14,7 @@
                     {%for i in range(0, len)%}
                          {% if i>0 %}
                             {% if survey[i][2]!=survey[i-1][2] %}
-                                <p class="domanda text-2xl -ml-4 font-bold" >
+                                <p class="domanda domande text-2xl -ml-4 font-bold" >
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
@@ -28,7 +28,7 @@
                                 </label>
                             {% endif %}
                         {% else %}
-                           <p class="text-2xl -ml-4 font-bold">
+                           <p class="domande text-2xl -ml-4 font-bold">
                                     {{ survey[i][0] }}
                                 </p>
                                 <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="mt-4 w-3/4 flex flex-row-reverse">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full" id="salva">SALVA</button>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full cursor-not-allowed" id="salva">SALVA</button>
         </div>
     </div>
 
@@ -50,7 +50,18 @@
     </div>
 
 <script>
-    document.getElementById("salva").addEventListener("click", salva);
+
+setInterval(()=>{
+    if(document.getElementsByClassName("domande").length == contaChecked()){
+        document.getElementById("salva").classList.remove("cursor-not-allowed");
+        document.getElementById("salva").addEventListener("click", salva);
+    }else{
+        document.getElementById("salva").classList.add("cursor-not-allowed");
+        document.getElementById("salva").removeEventListener("click", salva);
+    }
+}, 100)
+
+
     function salva(){
         //prende tutte le radio checked, il loro id e lo serializza
         let risposteCheckate = [];
@@ -71,12 +82,7 @@
         xmlhttp.open("POST", theUrl);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.send(JSON.stringify(risposteCheckate));
-        if(xmlhttp.readyState == 4 && xmlhttp.status== 200){
-            alert("inviato con successo");
-        }else{
-            alert("seleziona almeno una risposta");
-        }
-
+        alert("inviato con successo");
     }
 
     function colora(id){
@@ -95,6 +101,17 @@
                 }
             }
         })
+}
+
+function contaChecked(){
+        const risposte = document.querySelectorAll(".risposta");
+        let cont=0;
+        risposte.forEach((elem)=>{
+            if(elem.checked){
+                cont++;
+            }
+        })
+        return cont;
 }
 </script>
 
