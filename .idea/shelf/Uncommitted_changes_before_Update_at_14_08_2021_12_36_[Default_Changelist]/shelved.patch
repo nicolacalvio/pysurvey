@@ -1,0 +1,67 @@
+Index: pysurvey/app/templates/my-account.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends \"base.html\" %}\r\n{% block content %}\r\n\r\n    {% if username %}\r\n            <div class=\" flex justify-center pr-4 w-2/5 m-3 \" >\r\n            <div class=\"justify-center flex flex-col\">\r\n\r\n                   <div class=\"w-full flex justify-center \">\r\n                    <div class=\"border-4 rounded-full border-black\">\r\n                       <img class=\" h-48 inline  p-2\" src=\"{{ immagine }}\" >\r\n                    </div>\r\n\r\n                    </div>\r\n                    <h1 class=\"font-medium justify-start text-2xl\"> {{ username }}!</h1>\r\n\r\n\r\n            </div>\r\n\r\n            </div>\r\n            <div class=\" w-full flex  items-center p-4  \">\r\n            <div class=\"w-full flex flex-col justify-center ml-5\">\r\n\r\n               <div class=\"m-4 flex w-full ml-4  \">\r\n                    <div class=\"flex w-1/2\">\r\n                        <h1 class=\"font-medium justify-start text-2xl\"> Username</h1>\r\n                    </div>\r\n                   <div class=\"flex w-1/2\">\r\n                        <h1 class=\"font-medium justify-start text-2xl \"> Mail</h1>\r\n                    </div>\r\n                </div>\r\n                <div class=\"m-4 flex w-full justify-around  \">\r\n                    <div class=\"flex w-1/2\">\r\n                        <h1 class=\"text-xl\"> {{ username }} </h1>\r\n                    </div>\r\n                   <div class=\"flex w-1/2\">\r\n                       <h1 class=\"text-xl\"> {{ mail }}</h1>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"m-4 flex justify-start  w-1/2 \">\r\n                <button class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\" id=\"modifica\">Modifica</button>\r\n                 <!-- <h1 class=\"text-2xl\"> ciccio@gmail.com</h1>-->\r\n                </div>\r\n\r\n\r\n            </div>\r\n\r\n\r\n            </div>\r\n        <script>\r\n        document.getElementById(\"modifica\").addEventListener(\"click\", modificaSchermata);\r\n            function salva() {\r\n                //chiamata a API per salvare i nuovi dati inseriti\r\n\r\n                //cambio gli input con gli h1 di prima\r\n\r\n                //cambio il bottone in modifica\r\n                const modifica = document.getElementById(\"modifica\");\r\n                modifica.innerText = \"modifica\";\r\n                modifica.removeEventListener(\"click\", salva);\r\n                modifica.addEventListener(\"click\", modificaSchermata);\r\n            }\r\n\r\n            function modificaSchermata(){\r\n            //trasformo gli ultimi due h1 in caselle di testo\r\n            console.log(\"cliccato\");\r\n            const campi = [document.querySelectorAll(\"h1\")[4], document.querySelectorAll(\"h1\")[5]];\r\n            campi.forEach((elemento)=>{\r\n                if(elemento){\r\n                   const testo = elemento.innerText;\r\n                   const genitore = elemento.parentNode;\r\n                   elemento.remove();\r\n                   const nuovo = document.createElement(\"input\");\r\n                   nuovo.type = \"text\";\r\n                   nuovo.value = testo;\r\n                   genitore.appendChild(nuovo);\r\n                }\r\n            });\r\n            //dentro l'immagine ci metto un bottone cambia\r\n\r\n            //il tasto modifica diventa salva\r\n            const modifica = document.getElementById(\"modifica\");\r\n            modifica.innerText = \"salva\";\r\n            modifica.removeEventListener(\"click\", modificaSchermata);\r\n            modifica.addEventListener(\"click\", salva);\r\n        }\r\n        </script>\r\n\r\n    <!-- <h1>Ciao {{ username }}!</h1> -->\r\n    {% else %}\r\n    <h1>Devi prima accedere!</h1>\r\n    {% endif %}\r\n{% endblock content %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pysurvey/app/templates/my-account.html b/pysurvey/app/templates/my-account.html
+--- a/pysurvey/app/templates/my-account.html	(revision 43136cbdb7f2ee34ef3c52c99e280b14e1aa2902)
++++ b/pysurvey/app/templates/my-account.html	(date 1627847958244)
+@@ -22,18 +22,18 @@
+ 
+                <div class="m-4 flex w-full ml-4  ">
+                     <div class="flex w-1/2">
+-                        <h1 class="font-medium justify-start text-2xl"> Username</h1>
++                        <h1 class="font-medium justify-start text-2xl"> {{ username }}</h1>
+                     </div>
+                    <div class="flex w-1/2">
+-                        <h1 class="font-medium justify-start text-2xl "> Mail</h1>
++                        <h1 class="font-medium justify-start text-2xl "> {{ mail }}</h1>
+                     </div>
+                 </div>
+                 <div class="m-4 flex w-full justify-around  ">
+                     <div class="flex w-1/2">
+-                        <h1 class="text-xl"> {{ username }} </h1>
++                        <h1 class="text-xl">  username </h1>
+                     </div>
+                    <div class="flex w-1/2">
+-                       <h1 class="text-xl"> {{ mail }}</h1>
++                       <h1 class="text-xl"> mail </h1>
+                     </div>
+                 </div>
+ 
+@@ -64,7 +64,7 @@
+             function modificaSchermata(){
+             //trasformo gli ultimi due h1 in caselle di testo
+             console.log("cliccato");
+-            const campi = [document.querySelectorAll("h1")[4], document.querySelectorAll("h1")[5]];
++            const campi = [document.querySelectorAll("h1")[3], document.querySelectorAll("h1")[2]];
+             campi.forEach((elemento)=>{
+                 if(elemento){
+                    const testo = elemento.innerText;
+@@ -73,6 +73,7 @@
+                    const nuovo = document.createElement("input");
+                    nuovo.type = "text";
+                    nuovo.value = testo;
++                   nuovo.cla
+                    genitore.appendChild(nuovo);
+                 }
+             });
+Index: pysurvey/venv/pyvenv.cfg
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>home = C:\\Users\\nicola\\AppData\\Local\\Programs\\Python\\Python39\r\ninclude-system-site-packages = false\r\nversion = 3.9.2
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pysurvey/venv/pyvenv.cfg b/pysurvey/venv/pyvenv.cfg
+--- a/pysurvey/venv/pyvenv.cfg	(revision 43136cbdb7f2ee34ef3c52c99e280b14e1aa2902)
++++ b/pysurvey/venv/pyvenv.cfg	(date 1627846802391)
+@@ -1,3 +1,3 @@
+-home = C:\Users\nicola\AppData\Local\Programs\Python\Python39
++home = C:\Users\beatr\AppData\Local\Programs\Python\Python39
+ include-system-site-packages = false
+-version = 3.9.2
+\ No newline at end of file
++version = 3.9.2

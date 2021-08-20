@@ -66,7 +66,7 @@ xhttp.onreadystatechange = function() {
                 nuovoBottone.appendChild(spanBottone);
                 divGrande.appendChild(nuovoBottone);
 
-                divGrande.addEventListener("click", ()=>{
+                nuovoBottone.addEventListener("click", ()=>{
                     window.location.href = "/survey?id="+elemento.idSurvey;
                 })
 
