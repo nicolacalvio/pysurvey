@@ -180,24 +180,12 @@ def modifyAccount():
 def riceviRisposta():
     # questa funzione salva la risposta di un sondaggio
     content = request.get_json()
-    # json
-    # {
-    #   [
-    #       idDomanda:x,
-    #       idRisposta:y
-    #   ],
-    #   [
-    #       idDomanda:x,
-    #       idRisposta:y
-    #   ]
-    # }
-    contenuto = json.loads(content)
-    for domanda in contenuto:
+    for domanda in content:
         if isLogged() == "1":
-            db.session.add(RisposteUtenti(idDomanda=['idDomanda'], idRisposta=domanda['idRisposta'],
+            db.session.add(RisposteUtenti(idDomanda=domanda['idDomanda'], idRisposta=domanda['idRisposta'],
                                           idUtente=escape(session['iduser'])))
         else:
-            db.session.add(RisposteUtenti(idDomanda=['idDomanda'], idRisposta=domanda['idRisposta']))
+            db.session.add(RisposteUtenti(idDomanda=domanda['idDomanda'], idRisposta=domanda['idRisposta']))
         db.session.commit()
         return "success"
 
@@ -223,7 +211,7 @@ def creaSurvey():
     # questa funzione accetta in input un json che contiene tutte le risposte
     # e tutte le domande all'interno della survey
     content = request.get_json()
-    contenuto = json.loads(content)
+
     # json
     # {
     #       domanda:"come ti chiami?"
