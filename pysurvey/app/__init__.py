@@ -194,9 +194,6 @@ def riceviRisposta():
 def ritornaSurvey(idSurvey):
     # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
     # è necessario mandare come paramentro l'id del survey
-    # .addColumn('idSurvey', 'idDomanda', 'question', 'idDomanda', 'idRisposta', 'Risposta') \
-
-    # domanda =
 
     domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta,
                                         Domande.idDomanda, Risposte.idRisposta) \
@@ -212,17 +209,6 @@ def creaSurvey():
     # e tutte le domande all'interno della survey
     content = request.get_json()
 
-    # json
-    # {
-    #       domanda:"come ti chiami?"
-    #       risposte:{ risposta1,
-    #                   risposta2
-    #                 },
-    #       domanda: "quanti anni hai?",
-    #       risposte:{ risposta1,
-    #                   risposta2
-    #                 }
-    # }
 
 
 @home.route('/titoloEId')
@@ -248,6 +234,15 @@ def specificaSurvey():
 @home.route('/crea')
 def creaSondaggio():
     return render_template('crea_sondaggio.html', title='CREA SURVEY')
+
+@home.route('/ritorna-risultati')
+def ritornaRisultati():
+    if 'id' in request.args:
+        idSurvey = request.args['id']
+    # prendere i dati dal db sulla determinata Survey
+    # trasformare in json i dati
+    # returnarli
+    return "ciao"
 
 
 app.register_blueprint(home)
