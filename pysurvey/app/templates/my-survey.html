@@ -51,7 +51,7 @@ xhttp.onreadystatechange = function() {
 
                 let nuovo = document.createElement("div");
                 //nuovo.innerText = elemento.titolo;
-                nuovo.classList.add("flex", "flex-1","w-4/5","py-3", "px-4", "rounded-lg", "text-gray-500", "font-semibold", "cursor-pointer");
+                nuovo.classList.add("flex", "flex-1","w-4/5","py-3", "px-4", "rounded-lg", "text-gray-500", "font-semibold");
                 nuovo.id = elemento.idSurvey;
                 let spanTitolo = document.createElement("span");
                 spanTitolo.classList.add("px-5", "text-xl");
@@ -60,10 +60,18 @@ xhttp.onreadystatechange = function() {
                 divGrande.appendChild(nuovo);
 
                 let nuovoBottone = document.createElement("div");
-                nuovoBottone.classList.add("flex","flex-row-reverse", "bg-red-600", "py-3", "px-5", "text-white", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
+                nuovoBottone.classList.add("flex", "bg-red-600", "py-3", "px-5", "text-white", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
                 let spanBottone = document.createElement("span");
                 spanBottone.innerText = "Vai!!";
                 nuovoBottone.appendChild(spanBottone);
+                //bottone riusultati
+                let risBottone = document.createElement("div");
+                risBottone.classList.add("flex", "bg-green-100", "py-3", "px-5", "mx-2", "font-semibold", "rounded-lg", "hover:shadow-lg", "transition", "duration-3000", "cursor-pointer");
+                let spanRis = document.createElement("span");
+                spanRis.innerText = "Risultati";
+                risBottone.appendChild(spanRis);
+
+                divGrande.appendChild(risBottone);
                 divGrande.appendChild(nuovoBottone);
 
                 nuovoBottone.addEventListener("click", ()=>{
