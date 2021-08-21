@@ -16,23 +16,50 @@
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Replace with your content -->
       <div class="px-4 py-6 sm:px-0">
-        <div class="border-4 border-dashed border-gray-200 rounded-lg h-56">
-            <textarea rows="5" cols="50" id="multiLineInput" class="inline-block align-top h-full w-full p-4 text-lg" placeholder='Inserisci la DOMANDA'></textarea>
-        </div>
+          <div class ="flex ">
+             <div class="border-4 border-dashed border-gray-200 rounded-lg h-56 w-10/12">
+                <textarea rows="5" cols="50" id="multiLineInput" class="inline-block align-top h-full w-full p-4 text-lg" placeholder='Inserisci la DOMANDA'></textarea>
+            </div>
+
+            <div class="mt-4 space-y-4 mx-4">
+                <div class="flex items-center">
+                  <input type="radio" name="n_domande" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                  <label class="ml-3 block text-sm font-medium text-gray-700">
+                    Una risposta
+                  </label>
+                </div>
+                <div class="flex items-center">
+                  <input type="radio" name="n_domande" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                  <label  class="ml-3 block text-sm font-medium text-gray-700">
+                    Più risposte
+                  </label>
+                </div>
+
+            </div>
+          </div>
+
           <input class="block w-1/2 mt-4 border border-gray-300 rounded-lg p-4 text-lg shadow-lg" placeholder="Inserisci una RISPOSTA">
       </div>
       <!-- /End replace -->
+
     </div>
 
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Replace with your content -->
       <div class="px-4 py-6 sm:px-0">
-        <div class="border-4 border-dashed border-gray-200 rounded-lg h-56 border-red-200 hover:border-purple-500">
+        <div class="border-4 border-dashed border-gray-200 rounded-lg h-56 border-red-200 hover:border-purple-500 w-10/12">
             <button class="text-black h-full w-full text-3xl font-bold" >+</button>
         </div>
       </div>
       <!-- /End replace -->
     </div>
+
+    <div class="mt-4 w-3/4 flex flex-row-reverse">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Salva
+        </button>
+    </div>
+
 </div>
 
 {% endblock content %}
