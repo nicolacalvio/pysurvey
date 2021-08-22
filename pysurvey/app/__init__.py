@@ -244,5 +244,8 @@ def ritornaRisultati():
     # returnarli
     return "ciao"
 
+@home.route('/statistiche')
+def statistiche():
+    return render_template('statistiche.html', title='STATISTICHE')
 
 app.register_blueprint(home)

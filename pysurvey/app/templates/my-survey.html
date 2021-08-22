@@ -78,6 +78,10 @@ xhttp.onreadystatechange = function() {
                     window.location.href = "/survey?id="+elemento.idSurvey;
                 })
 
+                risBottone.addEventListener("click", ()=>{
+                    window.location.href = "/statistiche?id="+elemento.idSurvey;
+                })
+
                 div.appendChild(divGrande);
             })
 

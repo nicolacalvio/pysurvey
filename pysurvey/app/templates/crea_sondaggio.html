@@ -38,7 +38,7 @@
             </div>
           </div>
 
-          <input class="block w-1/2 mt-4 border border-gray-300 rounded-lg p-4 text-lg shadow-lg" placeholder="Inserisci una RISPOSTA">
+          <input class="block w-1/2 mt-4 border border-gray-300 rounded-lg p-4 text-lg shadow-lg risposta" placeholder="Inserisci una RISPOSTA">
       </div>
       <!-- /End replace -->
 
@@ -61,5 +61,33 @@
     </div>
 
 </div>
+
+    <script>
+        let risposte=document.querySelectorAll(".risposta")[0];
+        risposte.addEventListener('keypress', enter_premuto);
+
+        function enter_premuto(tasto){
+                    if (tasto.key === "Enter"){
+                        let nuovaRisp= risposte.cloneNode(true);
+                        risposte.parentNode.appendChild(nuovaRisp);
+                        nuovaRisp.addEventListener("keypress", enter_premuto)
+                        nuovaRisp.focus()
+                    }
+                }
+        /*
+        aggiungi_nodo_risp();
+        function aggiungi_nodo_risp(){
+            risposte.forEach((elemento)=>{
+                elemento.addEventListener('keypress', (tasto)=>{
+                    if (tasto.key === "Enter"){
+                        let nuovaRisp= elemento.cloneNode(true);
+                        elemento.parentNode.appendChild(nuovaRisp);
+                    }
+                })
+            });
+        }
+
+         */
+    </script>
 
 {% endblock content %}
