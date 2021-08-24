@@ -239,10 +239,13 @@ def creaSondaggio():
 def ritornaRisultati():
     if 'id' in request.args:
         idSurvey = request.args['id']
+        risp = db.session.query((func.sum(risposte_utenti.idRisposta),risposte_utenti.idRisposta).join(risposte_utenti, risposte_utenti.idDomanda == Domande.idDomanda).join(Domande, Domande.idSurvey == idSurvey))
+        return json.dumps(risp)
+    return "cacca"
     # prendere i dati dal db sulla determinata Survey
     # trasformare in json i dati
     # returnarli
-    return "ciao"
+
 
 @home.route('/statistiche')
 def statistiche():
