@@ -13,6 +13,7 @@ from markupsafe import escape
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.inspection import inspect
+import csv
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
@@ -238,17 +239,32 @@ def creaSondaggio():
 
 @home.route('/ritorna-risultati')
 def ritornaRisultati():
+    lista = []
+    dizionario = {}
     if 'id' in request.args:
         idSurvey = request.args['id']
-        risp = db.session.query((func.sum(RisposteUtenti.idRisposta), RisposteUtenti.idRisposta)).join(RisposteUtenti,
-                                                                                                       RisposteUtenti.idDomanda == Domande.idDomanda).join(
-            Domande, Domande.idSurvey == idSurvey).all()
-        return json.dumps(risp)
+        risp = db.session.query(func.count(RisposteUtenti.idRisposta), idSurvey, RisposteUtenti.idRisposta).select_from(Survey, RisposteUtenti,
+                                                                                   Domande).group_by(RisposteUtenti.idRisposta, idSurvey)
+        for row in risp:
+            lista.append(row)
+        print(lista)
+        #json.dumps(lista)
+
+        return jsonify(lista)
     return "cacca"
     # prendere i dati dal db sulla determinata Survey
     # trasformare in json i dati
     # returnarli
 
+@home.route('/csv')
+def crea_csv():
+    l = []
+    for r in db.session.query((RisposteUtenti.idRisposta)): #manca solo sistemare la query, però il cvs si forma
+        l.append(r)
+    with open("f1.csv", "w") as f:
+        writer = csv.writer(f)
+        writer.writerows(l)
+    return "fatto"
 
 @home.route('/statistiche')
 def statistiche():
