@@ -23,13 +23,13 @@
 
             <div class="mt-4 space-y-4 mx-4">
                 <div class="flex items-center">
-                  <input type="radio" checked="true" name="n_domande" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                  <input type="radio" checked="true" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton">
                   <label class="ml-3 block text-sm font-medium text-gray-700">
                     Una risposta
                   </label>
                 </div>
                 <div class="flex items-center">
-                  <input type="radio" name="n_domande" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                  <input type="radio" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton">
                   <label  class="ml-3 block text-sm font-medium text-gray-700">
                     Più risposte
                   </label>
@@ -63,6 +63,7 @@
 </div>
 
     <script>
+    var n_domande_value=1;
         //clono la prima domanda prima di qualunque cosa (ci servirà per aggiungere la domanda)
         let cloneDomanda=document.querySelectorAll(".domandina")[0].cloneNode(true);
 
@@ -76,6 +77,7 @@
                 let nuovaRisp= risposte.cloneNode(true);
                 risposte.parentNode.appendChild(nuovaRisp);
                 nuovaRisp.addEventListener("keypress", enter_premuto)
+                nuovaRisp.value = "";
                 nuovaRisp.focus()
             }
         }
@@ -97,10 +99,25 @@
 
         function aggiungiDomanda(){
             let cloneCloneDomanda=cloneDomanda.cloneNode(true);
+            cloneCloneDomanda.querySelectorAll(".radiobutton").forEach((elemento)=>{
+                elemento.name = "n_domande"+n_domande_value;
+            })
+            n_domande_value++;
+            let risposteCloneCloneDomanda = cloneCloneDomanda.querySelectorAll(".risposta")[0];
+            risposteCloneCloneDomanda.addEventListener('keypress', premutoBottone)
             parentTratteggiato.appendChild(cloneCloneDomanda);
             let cloneClonatoTrattegiato = tratteggiato.cloneNode(true);
             cloneClonatoTrattegiato.addEventListener("click", aggiungiDomanda);
             parentTratteggiato.appendChild(cloneClonatoTrattegiato);
+            function premutoBottone(tasto){
+                    if (tasto.key === "Enter"){
+                    let nuovaRisp= risposteCloneCloneDomanda.cloneNode(true);
+                    risposteCloneCloneDomanda.parentNode.appendChild(nuovaRisp);
+                    nuovaRisp.addEventListener("keypress", premutoBottone)
+                    nuovaRisp.value = "";
+                    nuovaRisp.focus()
+                }
+            }
             this.remove();
 
         }
