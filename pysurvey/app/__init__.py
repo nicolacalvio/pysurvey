@@ -10,6 +10,7 @@ from flask import Blueprint, render_template, request, Flask, redirect, url_for,
 from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
 from markupsafe import escape
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.inspection import inspect
 
@@ -210,7 +211,6 @@ def creaSurvey():
     content = request.get_json()
 
 
-
 @home.route('/titoloEId')
 def ritornaTitoloEId():
     # ritorna tutte le domande dell'utente e l'id
@@ -235,11 +235,14 @@ def specificaSurvey():
 def creaSondaggio():
     return render_template('crea_sondaggio.html', title='CREA SURVEY')
 
+
 @home.route('/ritorna-risultati')
 def ritornaRisultati():
     if 'id' in request.args:
         idSurvey = request.args['id']
-        risp = db.session.query((func.sum(risposte_utenti.idRisposta),risposte_utenti.idRisposta).join(risposte_utenti, risposte_utenti.idDomanda == Domande.idDomanda).join(Domande, Domande.idSurvey == idSurvey))
+        risp = db.session.query((func.sum(RisposteUtenti.idRisposta), RisposteUtenti.idRisposta)).join(RisposteUtenti,
+                                                                                                       RisposteUtenti.idDomanda == Domande.idDomanda).join(
+            Domande, Domande.idSurvey == idSurvey).all()
         return json.dumps(risp)
     return "cacca"
     # prendere i dati dal db sulla determinata Survey
@@ -250,5 +253,6 @@ def ritornaRisultati():
 @home.route('/statistiche')
 def statistiche():
     return render_template('statistiche.html', title='STATISTICHE')
+
 
 app.register_blueprint(home)
