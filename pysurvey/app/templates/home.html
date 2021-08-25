@@ -9,7 +9,7 @@
       >
         <div
           class="absolute w-full h-full bg-center bg-cover"
-          style='background-image: url("https://cdn.pixabay.com/photo/2015/12/13/09/40/banner-1090830__340.jpg");'
+          style='background-image: linear-gradient(rgba(0, 0, 0, 0.400),rgba(0, 0, 0, 0.3)), url("{{ url_for('static', filename='img/home_hero_1.jpg') }}");'
         >
           <span
             id="blackOverlay"
@@ -21,10 +21,10 @@
           <div class="items-center flex flex-wrap">
             <div class="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
 
-                <h1 class=" italic text-purple-800 font-semibold text-7xl " >
+                <h1 class=" italic text-gray-50 font-semibold text-7xl " >
                   Facile,veloce,versatile!
                 </h1>
-                <p class="mt-7 text-lg text-black-300">
+                <p class="mt-7 text-lg text-gray-50">
                   Form per tutte le tue esigenze...
                 </p>
               </div>
@@ -54,13 +54,13 @@
             ></polygon>
           </svg>
         </div>
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto my-20 px-4">
           <div class="items-center flex flex-wrap">
               <div class="relative z-30 md:object-left">
               <img
                 alt="..."
-                class="max-w-full rounded-lg shadow-lg"
-                src="https://cdn.pixabay.com/photo/2020/05/28/08/26/choices-5230400__340.jpg"
+                class="max-w-2xl rounded-lg shadow-lg"
+                src="{{ url_for('static', filename='img/question-mark.jpg') }}"
               />
             </div>
             <div class="w-full md:w-5/12 ml-auto mr-auto px-4">
