@@ -18,7 +18,7 @@ import csv
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@localhost:5432/pysurvey"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
 db = SQLAlchemy(app)
 
 
@@ -73,7 +73,7 @@ home = Blueprint('home', __name__)
 @home.route('/home')
 @home.route('/', methods=['GET', 'POST'])
 def homepage():
-    return render_template('home.html')
+    return render_template('home.html', title='home')
 
 
 @home.route('/login', methods=['GET', 'POST'])
@@ -209,7 +209,20 @@ def ritornaSurvey(idSurvey):
 def creaSurvey():
     # questa funzione accetta in input un json che contiene tutte le risposte
     # e tutte le domande all'interno della survey
+    iduser = escape(session['iduser'])
     content = request.get_json()
+    nuova_survey = Survey(idUser=iduser, titolo=content['titolo'])
+    db.session.add(nuova_survey)
+    db.session.commit()
+    for i in range(len(content)-2):
+        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'])
+        db.session.add(nuova_domanda)
+        db.session.commit()
+        for j in range(len(content[str(i)]['risposte'])):
+            nuova_risposta = Risposte(idDomanda=nuova_domanda.idDomanda, risposta=content[str(i)]['risposte'][str(j)])
+            db.session.add(nuova_risposta)
+            db.session.commit()
+    return "ciao"
 
 
 @home.route('/titoloEId')

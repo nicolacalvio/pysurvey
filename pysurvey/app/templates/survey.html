@@ -83,6 +83,7 @@ setInterval(()=>{
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.send(JSON.stringify(risposteCheckate));
         alert("inviato con successo");
+        window.location.href="/my-survey";
     }
 
     function colora(id){
