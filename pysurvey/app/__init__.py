@@ -73,7 +73,7 @@ home = Blueprint('home', __name__)
 @home.route('/home')
 @home.route('/', methods=['GET', 'POST'])
 def homepage():
-    return render_template('home.html', title='home')
+    return render_template('home.html')
 
 
 @home.route('/login', methods=['GET', 'POST'])
