@@ -73,7 +73,7 @@ home = Blueprint('home', __name__)
 @home.route('/home')
 @home.route('/', methods=['GET', 'POST'])
 def homepage():
-    return render_template('home.html', title='Home')
+    return render_template('home.html')
 
 
 @home.route('/login', methods=['GET', 'POST'])
@@ -258,13 +258,18 @@ def ritornaRisultati():
 
 @home.route('/csv')
 def crea_csv():
-    l = []
-    for r in db.session.query((RisposteUtenti.idRisposta)): #manca solo sistemare la query, però il cvs si forma
-        l.append(r)
-    with open("f1.csv", "w") as f:
-        writer = csv.writer(f)
-        writer.writerows(l)
-    return "fatto"
+    if 'id' in request.args:
+        idSurvey = request.args['id']
+        l = []
+        for r in db.session.query((RisposteUtenti.idRisposta)).filter(RisposteUtenti.idDomanda == idSurvey).all(): #manca solo sistemare la query, però il cvs si forma
+            # TODO: idDomanda deve diventare l'id della survey in quanto il csv è riasuntivo dell'intera survey non solo di una domanda
+            l.append(r)
+        with open("f1.csv", "w") as f:
+            writer = csv.writer(f)
+            writer.writerows(l)
+        return "fatto"
+    else:
+        return "errore id non presente"
 
 @home.route('/statistiche')
 def statistiche():
