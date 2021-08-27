@@ -18,7 +18,7 @@ import csv
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@localhost:5432/pysurvey"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
 db = SQLAlchemy(app)
 
 
@@ -66,11 +66,12 @@ class RisposteUtenti(db.Model):
 
 
 class Statistiche:
-    def __init__(self, numeroRisposte, risposta, idDomanda, domanda):
+    def __init__(self, numeroRisposte, risposta, idDomanda, domanda, idRisposta):
         self.numeroRisposte = numeroRisposte
         self.risposta = risposta
         self.idDomanda = idDomanda
         self.domanda = domanda
+        self.idRisposta = idRisposta
 
     def serialize(self):
         """Return object data in easily serializable format"""
@@ -78,7 +79,8 @@ class Statistiche:
             'numeroRisposte': self.numeroRisposte,
             'risposta': self.risposta,
             'idDomanda': self.idDomanda,
-            'domanda': self.domanda
+            'domanda': self.domanda,
+            'idRisposta': self.idRisposta
         }
 
 
@@ -275,14 +277,14 @@ def ritornaRisultati():
     if 'id' in request.args:
         idSurvey = int(request.args['id'])
         risp = db.session.query(func.count(RisposteUtenti.idRisposta), Risposte.risposta, Domande.idDomanda,
-                                Domande.question) \
+                                Domande.question, Risposte.idRisposta) \
             .select_from(RisposteUtenti) \
             .join(Risposte, RisposteUtenti.idRisposta == Risposte.idRisposta) \
             .join(Domande, Domande.idDomanda == RisposteUtenti.idDomanda) \
             .filter(Domande.idSurvey == idSurvey) \
-            .group_by(Domande.idDomanda, Risposte.risposta, Domande.question).all()
+            .group_by(Domande.idDomanda, Risposte.risposta, Domande.question, Risposte.idRisposta).all()
         print(risp)
-        return jsonify(json_list=[Statistiche(i[0], i[1], i[2], i[3]).serialize() for i in risp])
+        return jsonify(json_list=[Statistiche(i[0], i[1], i[2], i[3], i[4]).serialize() for i in risp])
     return "fallito"
     # prendere i dati dal db sulla determinata Survey
     # trasformare in json i dati
