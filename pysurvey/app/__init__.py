@@ -15,13 +15,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.inspection import inspect
 import csv
 
+# inizio della configurazione necesaria all'amiente
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
-db = SQLAlchemy(app)
+db = SQLAlchemy(app)  # inizializzazione del db
 
 
+# definizione di tutti i model usati dall'ORM
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True)
@@ -36,6 +38,7 @@ class Survey(db.Model):
     idUser = db.Column(db.Integer, ForeignKey('user.id'))
     titolo = db.Column(db.String(80))
 
+    # property utile in fase di serializzaizone in json
     @property
     def serialize(self):
         """Return object data in easily serializable format"""
@@ -66,6 +69,8 @@ class RisposteUtenti(db.Model):
 
 
 class Statistiche:
+    # classe nata per modellare la risposta di una query, contiene i campi nel costruttore
+    # utile per la serializzazione in oggeto json
     def __init__(self, numeroRisposte, risposta, idDomanda, domanda, idRisposta):
         self.numeroRisposte = numeroRisposte
         self.risposta = risposta
@@ -84,30 +89,30 @@ class Statistiche:
         }
 
 
-db.create_all()
-
+db.create_all()  # creo tutte le tabelle
 home = Blueprint('home', __name__)
 
 
 @home.route('/home')
-@home.route('/', methods=['GET', 'POST'])
+@home.route('/', methods=['GET', 'POST'])  # ci si può referenziare alla home in due modi
 def homepage():
     return render_template('home.html')
 
 
 @home.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.is_submitted():
+    form = LoginForm()  # abbiamo usato flask_wtf per i form
+    if form.is_submitted():  # se il form è submittato
         result = request.form
         username = result['username']
-        password = result['password']
-        user = User.query.filter_by(username=username).first()
+        password = result['password']  # prendo i vari campi del form
+        user = User.query.filter_by(username=username).first()  # trovo l'user
         if user:
-            if check_password_hash(user.password, password):
+            if check_password_hash(user.password, password):  # se l'user esiste checko la passwordo
                 # controllare se i dati corrispondono a quelli del DB
-                # settare cookie di sessione, query deve ritornare l'id dell'utente
-                iduser = user.id  # facciamo finta sia id dell'utente restituita in query
+                # settare cookie di sessione
+                iduser = user.id
+                # setto i cookie di sessione di tipo httpOnly per tenere lo stato dell'utente
                 session['iduser'] = iduser
                 session['username'] = username
                 session['mail'] = user.email
@@ -123,21 +128,22 @@ def login():
 @home.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm()
-    if form.is_submitted():
+    if form.is_submitted():  # se il form è inviato
         result = request.form
-        username = result['username']
-        password = generate_password_hash(result['password'], method='sha256')
+        username = result['username']  # prendo dati
+        password = generate_password_hash(result['password'], method='sha256')  # creo hash sha256
         mail = result['email']
-        new_user = User(username=username, email=mail, password=password, immagine="../static/img/profile.png")
+        new_user = User(username=username, email=mail, password=password, immagine="../static/img/profile.png")  #creo utente
         db.session.add(new_user)
-        db.session.commit()
-        iduser = new_user.id  # facciamo finta sia id dell'utente restituita in query
+        db.session.commit()  # metto in db l'utente
+        iduser = new_user.id  # id dell'utente
+        # imposto il cookie di sessione
         session['iduser'] = iduser
         session['username'] = username
         session['mail'] = mail
         session['immagine'] = "../static/img/profile.png"
         session['nazionalita'] = "Italiana"
-        resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo login
+        resp = make_response(redirect(url_for('home.myaccount')))  # mando a my-account dopo signup
         return resp
     return render_template('signup.html', title='Signup', form=form)
 
@@ -164,7 +170,7 @@ def myaccount():
 
 @home.route('/logged')
 def isLogged():
-    # questa funzione dice se l'utente è loggato
+    # questa funzione viene usata come API e dice se l'utente è loggato
     try:
         if session['iduser']:
             return "1"
@@ -177,7 +183,7 @@ def isLogged():
 def modifyAccount():
     # questa funzione permette di modificare l'account
     # la richiesta deve essere /modificaAccount?immagine="/img/immagine.png"&nome="nicola"&mail="prova@prova.it"
-    # attenzione se l'utente non modifica qualcosa non mettetelo nella richiesta!
+    # attenzione se l'utente non modifica qualcosa non si mette nella richiesta!
     # l'ordine in cui mettete i paramentri non è importante
     id = escape(session['iduser'])
     user = db.session.query(User).filter(User.id == int(id)).first()
@@ -201,7 +207,7 @@ def modifyAccount():
 def riceviRisposta():
     # questa funzione salva la risposta di un sondaggio
     content = request.get_json()
-    print(content)
+    # per ogni domanda mi salvo la risposta, se l'utente è loggato mi salvo in db anche il suo id
     for domanda in content:
         if isLogged() == "1":
             db.session.add(RisposteUtenti(idDomanda=domanda['idDomanda'], idRisposta=domanda['idRisposta'],
@@ -212,16 +218,15 @@ def riceviRisposta():
     return "success"
 
 
-# @home.route('/prendiSurvey', methods=['POST'])
+
 def ritornaSurvey(idSurvey):
     # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
-    # è necessario mandare come paramentro l'id del survey
+    # è necessario mandare come paramentro l'id della survey
 
     domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta,
                                         Domande.idDomanda, Risposte.idRisposta) \
         .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
         .filter(Domande.idSurvey == idSurvey).all()
-    # return jsonify(domandeERisposte)
     return domandeERisposte
 
 
@@ -231,18 +236,19 @@ def creaSurvey():
     # e tutte le domande all'interno della survey
     iduser = escape(session['iduser'])
     content = request.get_json()
-    nuova_survey = Survey(idUser=iduser, titolo=content['titolo'])
+    nuova_survey = Survey(idUser=iduser, titolo=content['titolo']) # creo survey nella tabella
     db.session.add(nuova_survey)
     db.session.commit()
     for i in range(len(content) - 2):
-        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'])
+        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'])  # aggiungo domanda
         db.session.add(nuova_domanda)
         db.session.commit()
         for j in range(len(content[str(i)]['risposte'])):
             nuova_risposta = Risposte(idDomanda=nuova_domanda.idDomanda, risposta=content[str(i)]['risposte'][str(j)])
+            # aggiungo risposta
             db.session.add(nuova_risposta)
             db.session.commit()
-    return "ciao"
+    return "success"
 
 
 @home.route('/titoloEId')
@@ -252,13 +258,14 @@ def ritornaTitoloEId():
         idUtente = escape(session['iduser'])
         titoliEId = db.session.query(Survey).filter(Survey.idUser == idUtente).all()
         if len(titoliEId) > 0:
-            return jsonify(json_list=[i.serialize for i in titoliEId])
+            return jsonify(json_list=[i.serialize for i in titoliEId])  # ritorno in json tutte le survey dell'utente
         return "Non hai ancora alcuna survey creata. \n Creane subito una!"
     return "Per vedere le tue survey o crearne delle nuove accedi oppure crea un account!"
 
 
 @home.route('/survey')
 def specificaSurvey():
+    # questa funzione ritorna la survey (domande e risposte)
     if 'id' in request.args:
         id = request.args['id']
         survey = ritornaSurvey(id)
@@ -272,8 +279,9 @@ def creaSondaggio():
 
 @home.route('/ritorna-risultati')
 def ritornaRisultati():
-    lista = []
-    dizionario = {}
+    # questa funzione ritorna i risultati di un sondaggio, in particolare
+    # numero di risposte alla risposta, domanda a cui si riferisce la risposta
+    # accetta come parametro l'id della survey
     if 'id' in request.args:
         idSurvey = int(request.args['id'])
         risp = db.session.query(func.count(RisposteUtenti.idRisposta), Risposte.risposta, Domande.idDomanda,
@@ -293,6 +301,7 @@ def ritornaRisultati():
 
 @home.route('/csv')
 def crea_csv():
+    # scarica in formato CSV le statistiche delle survey
     if 'id' in request.args:
         idSurvey = request.args['id']
         l = []
