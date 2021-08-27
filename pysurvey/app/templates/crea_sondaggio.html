@@ -37,8 +37,18 @@
 
             </div>
           </div>
+            <!-- RISPOSTE -->
+          <div class="flex mt-4  risposta" >
+             <input class="block w-1/2 border border-gray-300 rounded-lg p-4 text-lg shadow-lg "  name="risposta0" placeholder="Inserisci una RISPOSTA">
+              <div class="flex items-center">
+                 <svg class=" h-6 text-red-700 fill-current m-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">
+                        <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
+                    </svg>
+              </div>
 
-          <input class="block w-1/2 mt-4 border border-gray-300 rounded-lg p-4 text-lg shadow-lg risposta" name="risposta0" placeholder="Inserisci una RISPOSTA">
+
+          </div>
+
       </div>
       <!-- /End replace -->
 
@@ -156,6 +166,8 @@
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.send(JSON.stringify(oggettone));
             alert("Sondaggio creato con successo");
+            //TODO: fare il modale che ti dà la possibilità di condividere il link http://pysurvey.ddns.net/survey?id=x
+
             window.location.href = "/my-survey";
         }
 
