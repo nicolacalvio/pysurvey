@@ -4,10 +4,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
-    <div class="bg-white rounded-md dark:bg-darker" x-data="{ isOn: false }">
+    <div class="ml-4 rounded-md dark:bg-darker" x-data="{ isOn: false }">
           <!-- Card header -->
 
-          <div class="flex items-center justify-between p-4 border-b dark:border-primary" id="contenitore">
+          <div class="grid grid-cols-3 gap-y-11 items-center justify-between p-4 border-b dark:border-primary" id="contenitore">
 
             </div>
           </div>
@@ -54,8 +54,8 @@ xhttp.onreadystatechange = function() {
            }else{
                //aggiungo la domanda alla pagina e a fianco ci metto il grafico a torta con la prima risposta
 
-               let h4 = document.createElement('h4');
-               h4.classList.add("text-lg", "font-semibold", "text-gray-500", "dark:text-light")
+               let h4 = document.createElement('h2');
+               h4.classList.add("text-2xl", "font-semibold", "text-gray-500", "dark:text-light")
                h4.innerText = oggettone["json_list"][elemento].domanda;
 
                let primoDiv = document.createElement('div');
@@ -66,8 +66,8 @@ xhttp.onreadystatechange = function() {
 
                let canvas = document.createElement('canvas');
                canvas.id = oggettone["json_list"][elemento].idDomanda;
-               canvas.width=200;
-               canvas.height=200;
+               canvas.width=350;
+               canvas.height=350;
                secondoDiv.appendChild(canvas);
                primoDiv.appendChild(secondoDiv);
                h4.appendChild(primoDiv);
