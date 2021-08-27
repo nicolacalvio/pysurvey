@@ -10,7 +10,7 @@ from flask import Blueprint, render_template, request, Flask, redirect, url_for,
 from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
 from markupsafe import escape
-from sqlalchemy import func
+from sqlalchemy import func, ForeignKey
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.inspection import inspect
 import csv
@@ -33,7 +33,7 @@ class User(db.Model):
 
 class Survey(db.Model):
     idSurvey = db.Column(db.Integer, primary_key=True)  # sono chiavi esterne
-    idUser = db.Column(db.Integer)
+    idUser = db.Column(db.Integer, ForeignKey('user.id'))
     titolo = db.Column(db.String(80))
 
     @property
@@ -47,22 +47,39 @@ class Survey(db.Model):
 
 
 class Domande(db.Model):
-    idSurvey = db.Column(db.Integer)  # sono chiavi esterne
+    idSurvey = db.Column(db.Integer, ForeignKey('survey.idSurvey'))  # sono chiavi esterne
     idDomanda = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(200))
 
 
 class Risposte(db.Model):
     idRisposta = db.Column(db.Integer, primary_key=True)
-    idDomanda = db.Column(db.Integer)
+    idDomanda = db.Column(db.Integer, ForeignKey('domande.idDomanda'))
     risposta = db.Column(db.String(80))
 
 
 class RisposteUtenti(db.Model):
-    idRisposta = db.Column(db.Integer)
-    idDomanda = db.Column(db.Integer)
-    idUtente = db.Column(db.Integer)
+    idRisposta = db.Column(db.Integer, ForeignKey('risposte.idRisposta'))
+    idDomanda = db.Column(db.Integer, ForeignKey('domande.idDomanda'))
+    idUtente = db.Column(db.Integer, ForeignKey('user.id'))
     idRispostaUtente = db.Column(db.Integer, primary_key=True)
+
+
+class Statistiche:
+    def __init__(self, numeroRisposte, risposta, idDomanda, domanda):
+        self.numeroRisposte = numeroRisposte
+        self.risposta = risposta
+        self.idDomanda = idDomanda
+        self.domanda = domanda
+
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'numeroRisposte': self.numeroRisposte,
+            'risposta': self.risposta,
+            'idDomanda': self.idDomanda,
+            'domanda': self.domanda
+        }
 
 
 db.create_all()
@@ -182,6 +199,7 @@ def modifyAccount():
 def riceviRisposta():
     # questa funzione salva la risposta di un sondaggio
     content = request.get_json()
+    print(content)
     for domanda in content:
         if isLogged() == "1":
             db.session.add(RisposteUtenti(idDomanda=domanda['idDomanda'], idRisposta=domanda['idRisposta'],
@@ -189,7 +207,7 @@ def riceviRisposta():
         else:
             db.session.add(RisposteUtenti(idDomanda=domanda['idDomanda'], idRisposta=domanda['idRisposta']))
         db.session.commit()
-        return "success"
+    return "success"
 
 
 # @home.route('/prendiSurvey', methods=['POST'])
@@ -214,7 +232,7 @@ def creaSurvey():
     nuova_survey = Survey(idUser=iduser, titolo=content['titolo'])
     db.session.add(nuova_survey)
     db.session.commit()
-    for i in range(len(content)-2):
+    for i in range(len(content) - 2):
         nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'])
         db.session.add(nuova_domanda)
         db.session.commit()
@@ -255,26 +273,29 @@ def ritornaRisultati():
     lista = []
     dizionario = {}
     if 'id' in request.args:
-        idSurvey = request.args['id']
-        risp = db.session.query(func.count(RisposteUtenti.idRisposta), idSurvey, RisposteUtenti.idRisposta).select_from(Survey, RisposteUtenti,
-                                                                                   Domande).group_by(RisposteUtenti.idRisposta, idSurvey)
-        for row in risp:
-            lista.append(row)
-        print(lista)
-        #json.dumps(lista)
-
-        return jsonify(lista)
-    return "cacca"
+        idSurvey = int(request.args['id'])
+        risp = db.session.query(func.count(RisposteUtenti.idRisposta), Risposte.risposta, Domande.idDomanda,
+                                Domande.question) \
+            .select_from(RisposteUtenti) \
+            .join(Risposte, RisposteUtenti.idRisposta == Risposte.idRisposta) \
+            .join(Domande, Domande.idDomanda == RisposteUtenti.idDomanda) \
+            .filter(Domande.idSurvey == idSurvey) \
+            .group_by(Domande.idDomanda, Risposte.risposta, Domande.question).all()
+        print(risp)
+        return jsonify(json_list=[Statistiche(i[0], i[1], i[2], i[3]).serialize() for i in risp])
+    return "fallito"
     # prendere i dati dal db sulla determinata Survey
     # trasformare in json i dati
     # returnarli
+
 
 @home.route('/csv')
 def crea_csv():
     if 'id' in request.args:
         idSurvey = request.args['id']
         l = []
-        for r in db.session.query((RisposteUtenti.idRisposta)).filter(RisposteUtenti.idDomanda == idSurvey).all(): #manca solo sistemare la query, però il cvs si forma
+        for r in db.session.query((RisposteUtenti.idRisposta)).filter(
+                RisposteUtenti.idDomanda == idSurvey).all():  # manca solo sistemare la query, però il cvs si forma
             # TODO: idDomanda deve diventare l'id della survey in quanto il csv è riasuntivo dell'intera survey non solo di una domanda
             l.append(r)
         with open("f1.csv", "w") as f:
@@ -283,6 +304,7 @@ def crea_csv():
         return "fatto"
     else:
         return "errore id non presente"
+
 
 @home.route('/statistiche')
 def statistiche():
