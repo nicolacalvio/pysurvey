@@ -19,7 +19,7 @@ import csv
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@localhost:5432/pysurvey"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
 db = SQLAlchemy(app)  # inizializzazione del db
 
 
@@ -241,7 +241,8 @@ def creaSurvey():
     db.session.add(nuova_survey)
     db.session.commit()
     for i in range(len(content) - 2):
-        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'], singola=content[str(i)]['selezione'])  # aggiungo domanda
+        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'],
+                                singola=content[str(i)]['selezione'])  # aggiungo domanda
         db.session.add(nuova_domanda)
         db.session.commit()
         for j in range(len(content[str(i)]['risposte'])):
@@ -332,5 +333,11 @@ def statistiche():
             return "<h1>Devi essere loggato per vedere le statistiche della survey</h1>"
     return "<h1>Non hai inserito un id valido</h1>"
 
+
+@home.route('/logout')
+def logout():
+    session.clear()
+    resp = make_response(redirect(url_for('home.homepage')))  # mando a my-account dopo signup
+    return resp
 
 app.register_blueprint(home)
