@@ -96,7 +96,7 @@ home = Blueprint('home', __name__)
 @home.route('/home')
 @home.route('/', methods=['GET', 'POST'])  # ci si può referenziare alla home in due modi
 def homepage():
-    return render_template('home.html')
+    return render_template('home.html', title='Home')
 
 
 @home.route('/login', methods=['GET', 'POST'])
@@ -133,7 +133,8 @@ def signup():
         username = result['username']  # prendo dati
         password = generate_password_hash(result['password'], method='sha256')  # creo hash sha256
         mail = result['email']
-        new_user = User(username=username, email=mail, password=password, immagine="../static/img/profile.png")  #creo utente
+        new_user = User(username=username, email=mail, password=password,
+                        immagine="../static/img/profile.png")  # creo utente
         db.session.add(new_user)
         db.session.commit()  # metto in db l'utente
         iduser = new_user.id  # id dell'utente
@@ -218,7 +219,6 @@ def riceviRisposta():
     return "success"
 
 
-
 def ritornaSurvey(idSurvey):
     # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
     # è necessario mandare come paramentro l'id della survey
@@ -236,7 +236,7 @@ def creaSurvey():
     # e tutte le domande all'interno della survey
     iduser = escape(session['iduser'])
     content = request.get_json()
-    nuova_survey = Survey(idUser=iduser, titolo=content['titolo']) # creo survey nella tabella
+    nuova_survey = Survey(idUser=iduser, titolo=content['titolo'])  # creo survey nella tabella
     db.session.add(nuova_survey)
     db.session.commit()
     for i in range(len(content) - 2):
@@ -319,7 +319,17 @@ def crea_csv():
 
 @home.route('/statistiche')
 def statistiche():
-    return render_template('statistiche.html', title='STATISTICHE')
+    if 'id' in request.args:
+        idSurvey = request.args['id']
+        if isLogged() == "1":
+            idUserSurvey = db.session.query(Survey.idUser).filter(Survey.idSurvey == idSurvey).first()[0]
+            if int(idUserSurvey) == int(escape(session['iduser'])):
+                return render_template('statistiche.html', title='STATISTICHE')
+            else:
+                return "<h1>Solo il creatore può vedere le statistiche della survey</h1>"
+        else:
+            return "<h1>Devi essere loggato per vedere le statistiche della survey</h1>"
+    return "<h1>Non hai inserito un id valido</h1>"
 
 
 app.register_blueprint(home)
