@@ -193,7 +193,7 @@
             //le domande sono contrassegnate da name -> domanda+index
             //le risposte di una data domanda sono contrassegnate da name -> risposta+index_domanda
             //le radio button sono contrassegnate da name -> n_domande+index_domanda
-            if(document.getElementById("titolo").innerText !== ""){
+            if(document.getElementById("titolo").value !== ""){
                 let oggettone = Object.create(null);
                 oggettone.titolo = document.getElementById("titolo").value;
                 oggettone[0] = Object.create(null);
