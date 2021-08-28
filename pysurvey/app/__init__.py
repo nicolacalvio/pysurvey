@@ -19,7 +19,7 @@ import csv
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@localhost:5432/pysurvey"
 db = SQLAlchemy(app)  # inizializzazione del db
 
 
@@ -53,6 +53,7 @@ class Domande(db.Model):
     idSurvey = db.Column(db.Integer, ForeignKey('survey.idSurvey'))  # sono chiavi esterne
     idDomanda = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(200))
+    singola = db.Column(db.Boolean)
 
 
 class Risposte(db.Model):
@@ -224,7 +225,7 @@ def ritornaSurvey(idSurvey):
     # è necessario mandare come paramentro l'id della survey
 
     domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta,
-                                        Domande.idDomanda, Risposte.idRisposta) \
+                                        Domande.idDomanda, Risposte.idRisposta, Domande.singola) \
         .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
         .filter(Domande.idSurvey == idSurvey).all()
     return domandeERisposte
@@ -240,7 +241,7 @@ def creaSurvey():
     db.session.add(nuova_survey)
     db.session.commit()
     for i in range(len(content) - 2):
-        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'])  # aggiungo domanda
+        nuova_domanda = Domande(idSurvey=nuova_survey.idSurvey, question=content[str(i)]['domande'], singola=content[str(i)]['selezione'])  # aggiungo domanda
         db.session.add(nuova_domanda)
         db.session.commit()
         for j in range(len(content[str(i)]['risposte'])):

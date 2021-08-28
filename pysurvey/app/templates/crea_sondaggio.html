@@ -23,13 +23,13 @@
 
             <div class="mt-4 space-y-4 mx-4">
                 <div class="flex items-center">
-                  <input type="radio" checked="true" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton">
+                  <input type="radio" checked="true" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton" value="una">
                   <label class="ml-3 block text-sm font-medium text-gray-700">
                     Una risposta
                   </label>
                 </div>
                 <div class="flex items-center">
-                  <input type="radio" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton">
+                  <input type="radio" name="n_domande0" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 radiobutton" value="due">
                   <label  class="ml-3 block text-sm font-medium text-gray-700">
                     Più risposte
                   </label>
@@ -193,30 +193,43 @@
             //le domande sono contrassegnate da name -> domanda+index
             //le risposte di una data domanda sono contrassegnate da name -> risposta+index_domanda
             //le radio button sono contrassegnate da name -> n_domande+index_domanda
-            let oggettone = Object.create(null);
-            oggettone.titolo = document.getElementById("titolo").value;
-            oggettone[0] = Object.create(null);
-            for(let i=0; document.getElementsByName("domanda"+i).length!==0; i++){
-                oggettone[i].domande = document.getElementsByName("domanda"+i)[0].value;
-                oggettone[i].risposte = Object.create(null);
-                let j=0;
-                document.getElementsByName("risposta"+i).forEach((elemento) =>{
-                    oggettone[i]["risposte"][j]=elemento.value;
-                    j++;
-                })
+            if(document.getElementById("titolo").innerText !== ""){
+                let oggettone = Object.create(null);
+                oggettone.titolo = document.getElementById("titolo").value;
+                oggettone[0] = Object.create(null);
+                for(let i=0; document.getElementsByName("domanda"+i).length!==0; i++){
+                    oggettone[i].domande = document.getElementsByName("domanda"+i)[0].value;
+                    oggettone[i].risposte = Object.create(null);
+                    let j=0;
+                    document.getElementsByName("risposta"+i).forEach((elemento) =>{
+                        oggettone[i]["risposte"][j]=elemento.value;
+                        j++;
+                    })
 
-                oggettone[i].selezione = document.getElementsByName("n_domande"+i)[0].parentNode.querySelectorAll(".block")[0].innerText;
-                oggettone[i+1] = Object.create(null);
+                    let tipoDomanda;
+                    document.getElementsByName("n_domande" + i).forEach((elemento)=>{
+                        if(elemento.checked){
+                            tipoDomanda =elemento.value === "una";
+                        }
+                    });
+
+                    oggettone[i].selezione = tipoDomanda;
+                    console.log(oggettone[i].selezione);
+                    oggettone[i+1] = Object.create(null);
+                }
+                //console.log(JSON.stringify(oggettone));
+                var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+                var theUrl = "/creaSurvey";
+                xmlhttp.open("POST", theUrl);
+                xmlhttp.setRequestHeader("Content-Type", "application/json");
+                xmlhttp.send(JSON.stringify(oggettone));
+                //alert("Sondaggio creato con successo");
+                //document.getElementById("mega_contenitore").classList.remove("hidden");
+                //window.location.href = "/my-survey";
+            }else{
+                alert("devi impostare un titolo alla survey!");
             }
-            //console.log(JSON.stringify(oggettone));
-            var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-            var theUrl = "/creaSurvey";
-            xmlhttp.open("POST", theUrl);
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send(JSON.stringify(oggettone));
-            //alert("Sondaggio creato con successo");
-            document.getElementById("mega_contenitore").classList.remove("hidden");
-            //window.location.href = "/my-survey";
+
         }
 
     </script>

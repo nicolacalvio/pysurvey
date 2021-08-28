@@ -6,42 +6,68 @@
             margin-top:40px;
         }
     </style>
-
     <div id="app" class="flex flex-col w-full justify-center items-center">
         <div class="w-full max-w-3xl">
             <div class="bg-white p-12 rounded-lg shadow-lg w-full mt-8">
                 <div>
                     {%for i in range(0, len)%}
-                         {% if i>0 %}
-                            {% if survey[i][2]!=survey[i-1][2] %}
-                                <p class="domanda domande text-2xl -ml-4 font-bold" >
-                                    {{ survey[i][0] }}
-                                </p>
-                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
-                                    <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
-                                    {{ survey[i][1] }}
-                                </label>
+                        {% if survey[i][4] %} <!-- se è una domanda a risposta singola -->
+                            {% if i>0 %}
+                                {% if survey[i][2]!=survey[i-1][2] %}
+                                    <p class="domanda domande text-2xl -ml-4 font-bold" >
+                                        {{ survey[i][0] }}
+                                    </p>
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
+                                {% else %}
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
+                                {% endif %}
                             {% else %}
-                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
-                                    <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
-                                    {{ survey[i][1] }}
-                                </label>
+                               <p class="domande text-2xl -ml-4 font-bold">
+                                        {{ survey[i][0] }}
+                                    </p>
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
                             {% endif %}
-                        {% else %}
-                           <p class="domande text-2xl -ml-4 font-bold">
-                                    {{ survey[i][0] }}
-                                </p>
-                                <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
-                                    <input type="radio" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
-                                    {{ survey[i][1] }}
-                                </label>
+                        {% else %} <!-- se è una domanda a risposta multipla -->
+                            {% if i>0 %}
+                                {% if survey[i][2]!=survey[i-1][2] %}
+                                    <p class="domanda domande text-2xl -ml-4 font-bold" >
+                                        {{ survey[i][0] }}
+                                    </p>
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="checkbox" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
+                                {% else %}
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="checkbox" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
+                                {% endif %}
+                            {% else %}
+                               <p class="domande text-2xl -ml-4 font-bold">
+                                        {{ survey[i][0] }}
+                                    </p>
+                                    <label class="block mt-4 border border-gray-300 rounded-lg py-2 px-6 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-100">
+                                        <input type="checkbox" class="hidden risposta" id="{{ survey[i][2] }}_{{ survey[i][3] }}" name="{{ survey[i][2] }}" onclick="colora('{{ survey[i][2] }}_{{ survey[i][3] }}')">
+                                        {{ survey[i][1] }}
+                                    </label>
+                            {% endif %}
                         {% endif %}
                     {%endfor%}
                 </div>
             </div>
         </div>
         <div class="mt-4 w-3/4 flex flex-row-reverse">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-not-allowed" id="salva">SALVA</button>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 m-1 w-2/12 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="salva">SALVA</button>
         </div>
     </div>
 
@@ -50,7 +76,7 @@
     </div>
 
 <script>
-
+/*
 setInterval(()=>{
     if(document.getElementsByClassName("domande").length == contaChecked()){
         document.getElementById("salva").classList.remove("cursor-not-allowed");
@@ -60,7 +86,8 @@ setInterval(()=>{
         document.getElementById("salva").removeEventListener("click", salva);
     }
 }, 100)
-
+ */
+document.getElementById("salva").addEventListener("click", salva);
 
     function salva(){
         //prende tutte le radio checked, il loro id e lo serializza
@@ -75,7 +102,7 @@ setInterval(()=>{
                 i++;
             }
         })
-
+        console.log(risposteCheckate);
         //mando il json al backend
         var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
         var theUrl = "/inviaRisposta";
