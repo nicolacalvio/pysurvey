@@ -12,6 +12,12 @@
         <a href="#" class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-500 hover:bg-green-700" id="csv">
                 <img src="{{ url_for('static', filename='img/excel-icon.png') }}">  CSV
             </a>
+    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-300 text-black text-base font-medium hover:text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" onclick="copyToClipboard()">
+          <div  class="whitespace-nowrap mr-2 text-base font-medium" id="copiaUrl">
+                Copia URL
+            </div>
+             <img src="{{ url_for('static', filename='img/share-link.png') }}" width="20px" height="20px" id="icona">
+        </button>
     </div>
 
     <div class="ml-4 rounded-md dark:bg-darker" x-data="{ isOn: false }">

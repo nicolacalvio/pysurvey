@@ -92,6 +92,19 @@ xhttp.onreadystatechange = function() {
 xhttp.open("GET", "/ritorna-risultati?id="+id, true);
 xhttp.send();
 
+function copyToClipboard() {
+           let text = window.location.href.replace("statistiche", "survey");
+           const elem = document.createElement('textarea');
+           elem.value = text;
+           document.body.appendChild(elem);
+           elem.select();
+           document.execCommand('copy');
+           document.body.removeChild(elem);
+           document.getElementById("copiaUrl").innerText = "Copiato!";
+           document.getElementById("icona").src="/static/img/smile.png"
+        }
+
+
 /*
 var ctx = document.getElementById('myChart');
 var myChart = new Chart(ctx, {

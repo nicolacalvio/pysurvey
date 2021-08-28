@@ -115,7 +115,7 @@ def modifyAccount():
     # questa funzione permette di modificare l'account
     # la richiesta deve essere /modificaAccount?immagine="/img/immagine.png"&nome="nicola"&mail="prova@prova.it"
     # attenzione se l'utente non modifica qualcosa non si mette nella richiesta!
-    # l'ordine in cui mettete i paramentri non è importante
+    # l'ordine in cu    i mettete i paramentri non è importante
     id = escape(session['iduser'])
     user = db.session.query(User).filter(User.id == int(id)).first()
     if 'immagine' in request.args:
