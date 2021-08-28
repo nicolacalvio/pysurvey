@@ -3,16 +3,13 @@ from enum import unique
 import primary
 import json
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from app.config import TestingConfig, DevelopmentConfig, ProductionConfig
 import os
 from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session, jsonify
-from flask_wtf import FlaskForm
 from forms import LoginForm, SignupForm
 from markupsafe import escape
-from sqlalchemy import func, ForeignKey
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.inspection import inspect
 import csv
 
 # inizio della configurazione necesaria all'amiente
@@ -20,77 +17,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
-db = SQLAlchemy(app)  # inizializzazione del db
-
-
-# definizione di tutti i model usati dall'ORM
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(40), unique=True)
-    email = db.Column(db.String(200))
-    password = db.Column(db.String(200))
-    immagine = db.Column(db.String(200))
-    nazionalita = db.Column(db.String(200), default="Italiana")
-
-
-class Survey(db.Model):
-    idSurvey = db.Column(db.Integer, primary_key=True)  # sono chiavi esterne
-    idUser = db.Column(db.Integer, ForeignKey('user.id'))
-    titolo = db.Column(db.String(80))
-
-    # property utile in fase di serializzaizone in json
-    @property
-    def serialize(self):
-        """Return object data in easily serializable format"""
-        return {
-            'idSurvey': self.idSurvey,
-            'idUser': self.idUser,
-            'titolo': self.titolo
-        }
-
-
-class Domande(db.Model):
-    idSurvey = db.Column(db.Integer, ForeignKey('survey.idSurvey'))  # sono chiavi esterne
-    idDomanda = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(200))
-    singola = db.Column(db.Boolean)
-
-
-class Risposte(db.Model):
-    idRisposta = db.Column(db.Integer, primary_key=True)
-    idDomanda = db.Column(db.Integer, ForeignKey('domande.idDomanda'))
-    risposta = db.Column(db.String(80))
-
-
-class RisposteUtenti(db.Model):
-    idRisposta = db.Column(db.Integer, ForeignKey('risposte.idRisposta'))
-    idDomanda = db.Column(db.Integer, ForeignKey('domande.idDomanda'))
-    idUtente = db.Column(db.Integer, ForeignKey('user.id'))
-    idRispostaUtente = db.Column(db.Integer, primary_key=True)
-
-
-class Statistiche:
-    # classe nata per modellare la risposta di una query, contiene i campi nel costruttore
-    # utile per la serializzazione in oggeto json
-    def __init__(self, numeroRisposte, risposta, idDomanda, domanda, idRisposta):
-        self.numeroRisposte = numeroRisposte
-        self.risposta = risposta
-        self.idDomanda = idDomanda
-        self.domanda = domanda
-        self.idRisposta = idRisposta
-
-    def serialize(self):
-        """Return object data in easily serializable format"""
-        return {
-            'numeroRisposte': self.numeroRisposte,
-            'risposta': self.risposta,
-            'idDomanda': self.idDomanda,
-            'domanda': self.domanda,
-            'idRisposta': self.idRisposta
-        }
-
-
-db.create_all()  # creo tutte le tabelle
+from model import User, Survey, Domande, Risposte, RisposteUtenti, Statistiche, db
 home = Blueprint('home', __name__)
 
 
