@@ -2,7 +2,7 @@ var n_domande_value=1;
         //clono la prima domanda prima di qualunque cosa (ci servirà per aggiungere la domanda)
         let cloneDomanda=document.querySelectorAll(".domandina")[0].cloneNode(true);
 
-
+        let idSurvey =-1;
         //per aggiungere le risposte
         let risposte=document.querySelectorAll(".risposta")[0];
         risposte.addEventListener('keypress', enter_premuto);
@@ -64,6 +64,20 @@ var n_domande_value=1;
             this.remove();
 
         }
+
+        function copyToClipboard() {
+           while(idSurvey === -1){} //busy waiting della richiesta async
+           let text = window.location.href.replace("crea", "survey?id="+idSurvey);
+           const elem = document.createElement('textarea');
+           elem.value = text;
+           document.body.appendChild(elem);
+           elem.select();
+           document.execCommand('copy');
+           document.body.removeChild(elem);
+           document.getElementById("copiaUrl").innerText = "Copiato!";
+           document.getElementById("icona").src="/static/img/smile.png"
+        }
+
         function salvaSurvey(){
             //TODO: mandare tutte le domande e le risposte al backend che creerà la survey
             //l'id dello user lo ha già il backend tramite il cookie di sessione
@@ -91,7 +105,6 @@ var n_domande_value=1;
                     });
 
                     oggettone[i].selezione = tipoDomanda;
-                    console.log(oggettone[i].selezione);
                     oggettone[i+1] = Object.create(null);
                 }
                 //console.log(JSON.stringify(oggettone));
@@ -100,9 +113,13 @@ var n_domande_value=1;
                 xmlhttp.open("POST", theUrl);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
                 xmlhttp.send(JSON.stringify(oggettone));
-                //alert("Sondaggio creato con successo");
-                //document.getElementById("mega_contenitore").classList.remove("hidden");
-                window.location.href = "/my-survey";
+                xmlhttp.onreadystatechange = function() { // Call a function when the state changes.
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                        idSurvey = xmlhttp.responseText;
+                    }
+                }
+                document.getElementById("mega_contenitore").classList.remove("hidden");
+                //window.location.href = "/my-survey";
             }else{
                 alert("devi impostare un titolo alla survey!");
             }

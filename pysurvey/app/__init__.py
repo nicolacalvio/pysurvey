@@ -179,7 +179,7 @@ def creaSurvey():
             # aggiungo risposta
             db.session.add(nuova_risposta)
             db.session.commit()
-    return "success"
+    return str(nuova_survey.idSurvey)
 
 
 @home.route('/titoloEId')
