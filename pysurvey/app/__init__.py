@@ -1,25 +1,23 @@
 import codecs
 import io
-from enum import unique
-
-import primary
-import json
-from flask import Flask
 from app.config import TestingConfig, DevelopmentConfig, ProductionConfig
-import os
-from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session, jsonify, Response
-from forms import LoginForm, SignupForm
+from flask import Blueprint, render_template, request, Flask, redirect, url_for, make_response, session, jsonify, \
+    Response
+from app.forms import LoginForm, SignupForm
 from markupsafe import escape
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 import csv
+
 
 # inizio della configurazione necesaria all'amiente
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
-from model import User, Survey, Domande, Risposte, RisposteUtenti, Statistiche, db
+from app.model import User, Survey, Domande, Risposte, RisposteUtenti, Statistiche, db
+from app.utils.surveyresult import takeResults, ritornaSurvey
+
 home = Blueprint('home', __name__)
 
 
@@ -149,17 +147,6 @@ def riceviRisposta():
     return "success"
 
 
-def ritornaSurvey(idSurvey):
-    # questa funzione ritorna tutte le domande e tutte le risposte necessarie per un quiz
-    # è necessario mandare come paramentro l'id della survey
-
-    domandeERisposte = db.session.query(Domande.question.distinct().label('question'), Risposte.risposta,
-                                        Domande.idDomanda, Risposte.idRisposta, Domande.singola) \
-        .join(Risposte, Domande.idDomanda == Risposte.idDomanda) \
-        .filter(Domande.idSurvey == idSurvey).all()
-    return domandeERisposte
-
-
 @home.route('/creaSurvey', methods=['POST'])
 def creaSurvey():
     # questa funzione accetta in input un json che contiene tutte le risposte
@@ -218,13 +205,7 @@ def ritornaRisultati():
         if isLogged() == "1":
             idUserSurvey = db.session.query(Survey.idUser).filter(Survey.idSurvey == idSurvey).first()[0]
             if int(idUserSurvey) == int(escape(session['iduser'])):
-                risp = db.session.query(func.count(RisposteUtenti.idRisposta), Risposte.risposta, Domande.idDomanda,
-                                        Domande.question, Risposte.idRisposta) \
-                    .select_from(RisposteUtenti) \
-                    .join(Risposte, RisposteUtenti.idRisposta == Risposte.idRisposta) \
-                    .join(Domande, Domande.idDomanda == RisposteUtenti.idDomanda) \
-                    .filter(Domande.idSurvey == idSurvey) \
-                    .group_by(Domande.idDomanda, Risposte.risposta, Domande.question, Risposte.idRisposta).all()
+                risp = takeResults(idSurvey)
                 return jsonify(json_list=[Statistiche(i[0], i[1], i[2], i[3], i[4]).serialize() for i in risp])
     return "fallito"
     # prendere i dati dal db sulla determinata Survey
@@ -241,13 +222,7 @@ def crea_csv():
             idUserSurvey = db.session.query(Survey.idUser).filter(Survey.idSurvey == idSurvey).first()[0]
             if int(idUserSurvey) == int(escape(session['iduser'])):
                 # controlli di sicurezza per assicurarsi che sia il propietario della survey
-                risp = db.session.query(func.count(RisposteUtenti.idRisposta), Risposte.risposta, Domande.idDomanda,
-                                        Domande.question, Risposte.idRisposta) \
-                    .select_from(RisposteUtenti) \
-                    .join(Risposte, RisposteUtenti.idRisposta == Risposte.idRisposta) \
-                    .join(Domande, Domande.idDomanda == RisposteUtenti.idDomanda) \
-                    .filter(Domande.idSurvey == idSurvey) \
-                    .group_by(Domande.idDomanda, Risposte.risposta, Domande.question, Risposte.idRisposta).all()
+                risp = takeResults(idSurvey)
                 l = []
                 for r in risp:
                     l.append(r)
@@ -283,5 +258,6 @@ def logout():
     session.clear()
     resp = make_response(redirect(url_for('home.homepage')))  # mando a my-account dopo signup
     return resp
+
 
 app.register_blueprint(home)
