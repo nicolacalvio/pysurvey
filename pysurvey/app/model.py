@@ -6,7 +6,7 @@ db = SQLAlchemy(app)  # inizializzazione del db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), unique=True)
-    email = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(200), unique=True)
     password = db.Column(db.String(200), nullable=False)
     immagine = db.Column(db.String(200))
     nazionalita = db.Column(db.String(200), default="Italiana")
