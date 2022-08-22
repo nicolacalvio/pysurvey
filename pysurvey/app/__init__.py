@@ -14,7 +14,7 @@ import csv
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'nosql'
 app.config.from_object(DevelopmentConfig)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@pysurvey.ddns.net:5432/pysurvey"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:bitnami@localhost:5432/pysurvey"
 from app.model import User, Survey, Domande, Risposte, RisposteUtenti, Statistiche, db
 from app.utils.surveyresult import takeResults, ritornaSurvey
 home = Blueprint('home', __name__)
